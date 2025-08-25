@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MentalHealthContent.ai — Create credible mental‑health content with AI</title>
+  <meta name="description" content="Curate and generate ethical, client‑friendly mental‑health content with AI. Try free prompts, then upgrade for unlimited templates, brand voice, and batch generation."/>
+  <style>
+    :root {
+      --bg: #0b1022;
+      --panel: #0e1436;
+      --muted: #c7d2fe;
+      --text: #eef2ff;
+      --accent: #8b5cf6; /* violet */
+      --accent-2: #06b6d4; /* cyan */
+      --card: #0a0f2b;
+      --border: #1b2161;
+      --ring: rgba(139,92,246,.35);
+    }
+    [data-theme="vibrant"] {
+      --bg: #0a0a1f;
+      --panel: #0e1329;
+      --muted: #ffe4e6;
+      --text: #fff1f2;
+      --accent: #f97316; /* orange */
+      --accent-2: #ec4899; /* pink */
+      --card: #0c1028;
+      --border: #30215e;
+      --ring: rgba(236,72,153,.35);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: linear-gradient(180deg, var(--bg), #0b1220 45%, #0f172a 100%);
+      color: var(--text); line-height: 1.5;
+    }
+    a { color: var(--accent-2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 1rem; }
+    header {
+      position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(140%) blur(8px);
+      background: rgba(11, 18, 32, 0.7); border-bottom: 1px solid var(--border);
+    }
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 0; }
+    .brand { display: flex; align-items: center; gap: .6rem; font-weight: 700; letter-spacing: .2px; }
+    .brand svg { width: 28px; height: 28px; }
+    .menu { display: flex; gap: 1rem; align-items: center; }
+    .menu a { color: var(--text); opacity: 0.9; font-size: .95rem; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border: 1px solid var(--border); background: #101826; color: var(--text); padding: .65rem .95rem; border-radius: .75rem; font-weight: 600; cursor: pointer; transition: transform .04s ease, box-shadow .2s ease; }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,.25); }
+    .btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent-2) 50%, var(--accent-3)); border-color: transparent; color: #0a0a0a; box-shadow: 0 6px 18px rgba(167,139,250,.25), 0 2px 8px rgba(34,211,238,.18); }
+    .btn.primary:hover { transform: translateY(-2px) scale(1.01); box-shadow: 0 10px 24px rgba(167,139,250,.35), 0 6px 14px rgba(34,211,238,.25); }
+    .btn.ghost { background: transparent; }
+    .hero { padding: 4rem 0 2.5rem; text-align: center; }
+    .hero h1 { font-size: clamp(2.1rem, 2.8vw + 1rem, 3.25rem); line-height: 1.1; margin: .25rem 0 1rem; }
+    .gradient-text { background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+      -webkit-background-clip: text; background-clip: text; color: transparent; }
+    @keyframes bgShift { 0%{ background-position: 0% 50%; } 50%{ background-position: 100% 50%; } 100%{ background-position: 0% 50%; } }
+    @media (prefers-reduced-motion: no-preference){
+      body { background: linear-gradient(135deg, #0b0f2a, #0a0f1f, #0b0f2a);
+             background-size: 400% 400%; animation: bgShift 24s ease infinite; }
+    }
+    .hero p { color: var(--muted); max-width: 760px; margin: 0.25rem auto 1.25rem; font-size: 1.05rem; }
+    .hero .cta { display: flex; gap: .75rem; flex-wrap: wrap; justify-content: center; margin-top: 1.25rem; }
+    .hero .badges { display: flex; justify-content: center; gap: .75rem; color: var(--muted); font-size: .9rem; margin-top: .75rem; flex-wrap: wrap; }
+
+    .grid { display: grid; gap: 1rem; }
+    @media (min-width: 900px) {
+      .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+      .grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .card { background: linear-gradient(180deg, rgba(167,139,250,.08), rgba(34,211,238,.06)), var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1rem; transition: transform .1s ease, box-shadow .2s ease; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.25), 0 0 0 1px rgba(167,139,250,.25) inset; }
+    .card h3 { margin: .2rem 0 .25rem; font-size: 1.05rem; }
+    .card p { color: var(--muted); font-size: .95rem; margin: .25rem 0 .5rem; }
+    .micro { font-size: .85rem; color: var(--muted); }
+
+    .section { padding: 2.5rem 0; }
+    .section h2 { font-size: clamp(1.25rem, 2vw + .8rem, 1.75rem); margin: 0 0 1rem; }
+
+    .pill { display: inline-block; font-size: .75rem; letter-spacing: .2px; border: 1px solid transparent; color: #0a0a0a; padding: .32rem .6rem; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+
+    /* Pricing */
+    .pricing { display: grid; gap: 1rem; }
+    @media (min-width: 900px) { .pricing { grid-template-columns: repeat(4, 1fr); } }
+    .price-card { background: linear-gradient(180deg, #0d1628, #0c1424); border: 1px solid var(--border); border-radius: 1rem; padding: 1rem; display: flex; flex-direction: column; gap: .6rem; }
+    .price-card h3 { margin: 0; }
+    .price { font-size: 1.6rem; font-weight: 800; }
+    .features { list-style: none; padding: 0; margin: .25rem 0 0; }
+    .features li { padding-left: 1.25rem; position: relative; margin: .35rem 0; color: var(--muted); }
+    .features li::before { content: "✔"; position: absolute; left: 0; top: 0; opacity: .6; }
+
+    /* Prompt Gallery */
+    .prompt { background: #0c1424; border: 1px dashed #334155; border-radius: .85rem; padding: .9rem; }
+    .prompt code { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: .9rem; color: #cbd5e1; }
+    .toolbar { display: flex; gap: .5rem; justify-content: flex-end; margin-top: .5rem; }
+
+    /* FAQ */
+    details { background: #0c1424; border: 1px solid var(--border); border-radius: .75rem; padding: .75rem 1rem; }
+    details + details { margin-top: .5rem; }
+    details summary { cursor: pointer; font-weight: 600; }
+    details p { color: var(--muted); margin-top: .5rem; }
+
+    footer { border-top: 1px solid var(--border); padding: 2rem 0; color: var(--muted); font-size: .9rem; }
+
+    /* Simple modal for sample output */
+    .modal { position: fixed; inset: 0; display: none; background: rgba(0,0,0,.55); align-items: center; justify-content: center; padding: 1rem; }
+    .modal.active { display: flex; }
+    .modal-card { max-width: 720px; width: 100%; background: #0b1220; border: 1px solid var(--border); border-radius: 1rem; padding: 1rem; }
+    .modal-card pre { white-space: pre-wrap; background: #0c1424; padding: .75rem; border-radius: .5rem; overflow: auto; }
+  
+    /* --- Theme Enhancements (vibrant + glow) --- */
+    body { 
+      background: radial-gradient(1000px 600px at 10% -10%, color-mix(in oklab, var(--accent) 40%, transparent), transparent 60%),
+                  radial-gradient(900px 500px at 90% 10%, color-mix(in oklab, var(--accent-2) 40%, transparent), transparent 60%),
+                  linear-gradient(180deg, var(--bg), #0b0f24 50%, var(--panel) 120%);
+    }
+    .hero h1 {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      text-shadow: none;
+    }
+    .btn.primary { 
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-color: transparent; color: #0b0f1a; 
+      box-shadow: 0 0 0 2px var(--ring), 0 8px 24px rgba(0,0,0,.35);
+    }
+    .btn:hover { box-shadow: 0 10px 24px rgba(0,0,0,.35), 0 0 0 2px var(--ring) inset; }
+    .btn.primary:hover { transform: translateY(-2px) scale(1.01); }
+    .menu a { position: relative; }
+    .menu a::after { content:""; position:absolute; left:0; bottom:-6px; width:0; height:2px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width .2s ease; }
+    .menu a:hover::after { width:100%; }
+    .card { transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease; }
+    .card:hover { transform: translateY(-2px); border-color: color-mix(in hsl, var(--accent) 30%, var(--border)); box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+    .pill { border-color: transparent; background: linear-gradient(90deg, color-mix(in oklab, var(--accent) 20%, #0c1424), color-mix(in oklab, var(--accent-2) 20%, #0c1424)); color: var(--text); opacity:.9; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand" aria-label="MentalHealthContent.ai home">
+        <!-- Simple brain-heart logo -->
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M12 21s-6-3.8-9-7.1C1 12 1 9.5 2.7 7.8c1.6-1.6 4.3-1.5 6 0L12 9l3.3-1.2c1.7-1.5 4.4-1.6 6 0C22 9.5 22 12 21 13.9 18 17.2 12 21 12 21z" fill="url(#g)"/>
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#22c55e"/>
+              <stop offset="1" stop-color="#06b6d4"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span>MentalHealthContent.ai</span>
+      </div>
+      <nav class="menu" aria-label="primary">
+        <a href="#examples">Examples</a>
+        <a href="#prompts">Free Prompts</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <button class="btn ghost" id="themeToggle" title="Toggle theme">✨ Theme</button>
+        <a class="btn ghost" href="#join">Sign in</a>
+        <a class="btn primary" href="#start">Start free</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero container" id="start">
+      <span class="pill">Built by a clinician • Evidence‑informed</span>
+      <h1 class="gradient-text">Create credible mental‑health content with AI</h1>
+      <p>Generate client‑friendly posts, worksheet outlines, psychoeducation blurbs, video scripts, and more. Start with <strong>free prompts</strong> and sample outputs. Upgrade for brand voice, batch generation, and export‑ready assets. <em>Not for clinical diagnosis or crisis use.</em></p>
+      <div class="cta">
+        <a class="btn primary" href="#prompts">Try 3 free prompts</a>
+        <button class="btn" id="viewSample">See a sample output</button>
+      </div>
+      <div class="badges">
+        <span class="pill">No PHI • HIPAA‑conscious workflows</span>
+        <span class="pill">Reading‑level & tone controls</span>
+        <span class="pill">Citations & disclaimers helper</span>
+      </div>
+    </section>
+
+    <section class="section container" id="examples">
+      <h2>What you can make in minutes</h2>
+      <div class="grid cols-3">
+        <div class="card">
+          <h3>Instagram carousel copy</h3>
+          <p class="micro">Topic: 5‑4‑3‑2‑1 grounding • Audience: teens • Tone: warm, validating</p>
+          <p>Hook, 7 concise slides, alt‑text suggestions, CTA with crisis disclaimer.</p>
+        </div>
+        <div class="card">
+          <h3>Worksheet outline</h3>
+          <p class="micro">Modality: CBT • Skill: thought reframing • Level: 6th grade</p>
+          <p>Title, goal, step‑by‑step sections, example, reflection questions, and printable layout notes.</p>
+        </div>
+        <div class="card">
+          <h3>Short video script</h3>
+          <p class="micro">Format: 60s TikTok • Topic: DBT STOP skill</p>
+          <p>Hook, beats (0–60s), on‑screen captions, B‑roll ideas, and clear disclaimer slide.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section container" id="prompts">
+      <h2>Free prompt starters (copy → paste)</h2>
+      <div class="grid cols-2">
+        <div class="prompt">
+          <div class="pill">IG Carousel</div>
+          <code id="p1">Write a 7‑slide Instagram carousel about the 5‑4‑3‑2‑1 grounding technique for teens with anxiety. Tone: warm and validating. Reading level: 6th grade. Include alt‑text suggestions for each slide and a short crisis disclaimer on the final slide.</code>
+          <div class="toolbar">
+            <button class="btn" onclick="copy('#p1')">Copy</button>
+          </div>
+        </div>
+        <div class="prompt">
+          <div class="pill">Worksheet Outline</div>
+          <code id="p2">Create a printable worksheet outline teaching CBT thought reframing. Sections: (1) What is a thought? (2) Spotting thinking traps, (3) Reframe steps with example, (4) Try it, (5) Reflection. Reading level: 5th–6th grade. Include notes for a black‑and‑white printable layout.</code>
+          <div class="toolbar">
+            <button class="btn" onclick="copy('#p2')">Copy</button>
+          </div>
+        </div>
+        <div class="prompt">
+          <div class="pill">Video Script</div>
+          <code id="p3">Draft a 60‑second video script explaining the DBT STOP skill. Include timestamps (0–60s), on‑screen captions, simple analogies, and a final slide with a non‑crisis disclaimer.</code>
+          <div class="toolbar">
+            <button class="btn" onclick="copy('#p3')">Copy</button>
+          </div>
+        </div>
+        <div class="prompt">
+          <div class="pill">Blog/SEO</div>
+          <code id="p4">Generate an outline for a 1200‑word blog post on “What is ACT therapy?” for a general audience. Include meta title/description suggestions, FAQ schema ideas, and a sidebar callout that clarifies this is educational content, not medical advice.</code>
+          <div class="toolbar">
+            <button class="btn" onclick="copy('#p4')">Copy</button>
+          </div>
+        </div>
+      </div>
+      <p class="micro" style="margin-top:.75rem">Sign up to unlock more templates, tone controls, brand voice, batch generation, and exports.</p>
+    </section>
+
+    <section class="section container" id="pricing">
+      <h2>Simple pricing</h2>
+      <div class="pricing">
+        <div class="price-card">
+          <h3>Free</h3>
+          <div class="price">$0</div>
+          <ul class="features">
+            <li>3 generations / day</li>
+            <li>Starter prompt library</li>
+            <li>Watermarked exports</li>
+          </ul>
+          <button class="btn" onclick="scrollToJoin()">Start free</button>
+        </div>
+        <div class="price-card" style="border-color:#1e3a8a; box-shadow: 0 0 0 1px #1e3a8a inset;">
+          <h3>Creator</h3>
+          <div class="price">$12 / mo</div>
+          <ul class="features">
+            <li>200 credits / mo</li>
+            <li>Brand voice & reading level</li>
+            <li>Export: B&W printable, captions</li>
+          </ul>
+          <button class="btn primary" onclick="scrollToJoin()">Upgrade</button>
+        </div>
+        <div class="price-card">
+          <h3>Pro</h3>
+          <div class="price">$29 / mo</div>
+          <ul class="features">
+            <li>800 credits / mo</li>
+            <li>Batch generation & versions</li>
+            <li>Citation helper & disclaimers</li>
+          </ul>
+          <button class="btn" onclick="scrollToJoin()">Go Pro</button>
+        </div>
+        <div class="price-card">
+          <h3>Agency</h3>
+          <div class="price">$69 / mo</div>
+          <ul class="features">
+            <li>5 seats + shared library</li>
+            <li>Custom templates & styles</li>
+            <li>Priority support</li>
+          </ul>
+          <button class="btn" onclick="scrollToJoin()">Contact</button>
+        </div>
+      </div>
+      <p class="micro" style="margin-top:.5rem">Or buy credits as you go • One‑time packs available at checkout.</p>
+    </section>
+
+    <section class="section container" id="join">
+      <h2>Get early access</h2>
+      <p class="micro">We’ll email you when your account is ready. No spam, unsubscribe anytime.</p>
+      <form class="card" method="POST" action="https://formspree.io/f/your-form-id" onsubmit="thanks(event)">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" required placeholder="you@example.com" style="width:100%;margin:.35rem 0 0.75rem;padding:.7rem;border-radius:.6rem;border:1px solid var(--border);background:#0c1424;color:var(--text)"/>
+        <label for="role">I’m a...</label>
+        <select id="role" name="role" style="width:100%;margin:.35rem 0 .9rem;padding:.7rem;border-radius:.6rem;border:1px solid var(--border);background:#0c1424;color:var(--text)">
+          <option>Therapist / Clinician</option>
+          <option>Coach / Educator</option>
+          <option>Content Creator</option>
+          <option>Agency / Org</option>
+          <option>Other</option>
+        </select>
+        <button class="btn primary" type="submit">Join the waitlist</button>
+      </form>
+    </section>
+
+    <section class="section container" id="faq">
+      <h2>FAQ</h2>
+      <details>
+        <summary>Is this medical advice?</summary>
+        <p>No. This is an educational content tool. It does not provide diagnosis or treatment and is not a substitute for professional care. Always include a crisis disclaimer and local resources when appropriate.</p>
+      </details>
+      <details>
+        <summary>Is client data stored?</summary>
+        <p>Avoid entering protected health information (PHI). We do not require PHI for content generation. Drafts you create can be deleted at any time from your account.</p>
+      </details>
+      <details>
+        <summary>How do credits work?</summary>
+        <p>Each generation costs 1–5 credits depending on length and features (e.g., batch runs). Unused subscription credits roll over for 30 days.</p>
+      </details>
+      <details>
+        <summary>What about citations and accuracy?</summary>
+        <p>Pro plans include a citation helper that suggests reputable sources and flags language that could be misleading, stigmatizing, or outside scope.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div>MentalHealthContent.ai • Built by a licensed clinician • © <span id="yr"></span></div>
+      <div style="margin-top:.5rem">Educational use only. Not for crisis or emergency use. <a href="#">Terms</a> · <a href="#">Privacy</a> · <a href="#">Contact</a></div>
+    </div>
+  </footer>
+
+  <div class="modal" id="sampleModal" role="dialog" aria-modal="true" aria-labelledby="sampleTitle">
+    <div class="modal-card">
+      <h3 id="sampleTitle" style="margin-top:0">Sample Output: 7‑Slide Carousel — 5‑4‑3‑2‑1 Grounding</h3>
+      <pre>
+Slide 1 (Hook): “Anxiety spiking? Try this quick grounding trick.”
+Slide 2: “5 things you can SEE…” + short examples
+Slide 3: “4 things you can FEEL (touch)…” + safe suggestions
+Slide 4: “3 things you can HEAR…”
+Slide 5: “2 things you can SMELL…” + alternatives
+Slide 6: “1 thing you can TASTE…”
+Slide 7 (CTA + Disclaimer): “You’re not alone. Save for later.” + “Educational only—if you’re in crisis, call/text local resources (e.g., 988 in the U.S.).”
+Alt‑text notes: Each slide includes concise, descriptive alt‑text for accessibility.
+      </pre>
+      <div style="display:flex; gap:.5rem; justify-content:flex-end; margin-top:.75rem;">
+        <button class="btn" onclick="closeSample()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const yr = document.getElementById('yr');
+    yr.textContent = new Date().getFullYear();
+
+    function copy(sel){
+      const el = document.querySelector(sel);
+      const r = document.createRange();
+      r.selectNode(el);
+      const s = window.getSelection();
+      s.removeAllRanges();
+      s.addRange(r);
+      try { document.execCommand('copy'); } catch(e) {}
+      s.removeAllRanges();
+      const btn = el.parentElement.querySelector('button');
+      const old = btn.textContent; btn.textContent = 'Copied!';
+      setTimeout(()=> btn.textContent = old, 1000);
+    }
+
+    function scrollToJoin(){ document.querySelector('#join').scrollIntoView({behavior:'smooth'}); }
+
+    const modal = document.getElementById('sampleModal');
+    document.getElementById('viewSample').addEventListener('click', ()=> modal.classList.add('active'));
+    function closeSample(){ modal.classList.remove('active'); }
+
+    function thanks(e){
+      e.preventDefault();
+      const form = e.target;
+      const data = new FormData(form);
+      fetch(form.action, { method: 'POST', body: data })
+        .then(()=> alert('Thanks! Please check your email soon.'))
+        .catch(()=> alert('Submitted.'))
+    }
+  
+    // Theme toggle
+    (function(){
+      const root = document.documentElement;
+      const saved = localStorage.getItem('mhc_theme');
+      if (saved) { if (saved) root.setAttribute('data-theme', saved); }
+      const tgl = document.getElementById('themeToggle');
+      function setState(){ if(!tgl) return; tgl.setAttribute('aria-pressed', root.getAttribute('data-theme')==='vibrant'); }
+      setState();
+      if (tgl) tgl.addEventListener('click', ()=>{
+        const next = root.getAttribute('data-theme')==='vibrant' ? '' : 'vibrant';
+        if (next) root.setAttribute('data-theme', next); else root.removeAttribute('data-theme');
+        localStorage.setItem('mhc_theme', next);
+        setState();
+      });
+    })();
+  </script>
+</body>
+</html>
