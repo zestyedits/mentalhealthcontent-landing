@@ -1,3 +1,4 @@
+// --- Robust body parse for Vercel Node ---
 async function readJson(req) {
   return await new Promise((resolve) => {
     let body = '';
@@ -15,7 +16,7 @@ export default async function handler(req, res) {
   const { topic = 'grounding for teens', format = 'carousel' } = await readJson(req);
 
   if (!process.env.OPENAI_API_KEY) {
-    return res.status(500).json({ error: 'Missing OPENAI_API_KEY' });
+    return res.status(500).json({ error: 'Missing OPENAI_API_KEY on server' });
   }
 
   const system = [
@@ -30,28 +31,43 @@ Return concise, numbered sections. If carousel, give 7 short slides with optiona
 End with a one-line educational disclaimer and crisis resource example (e.g., 988 in the U.S.).`;
 
   try {
-    const resp = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
+    const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
       headers: {
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json"
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [{ role: "system", content: system }, { role: "user", content: user }],
-        temperature: 0.7
-      })
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'system', content: system }, { role: 'user', content: user }],
+        temperature: 0.7,
+      }),
     });
 
+    const raw = await resp.text(); // read as text so we can always inspect
     if (!resp.ok) {
-      const err = await resp.text();
-      return res.status(resp.status).json({ error: err });
+      return res.status(resp.status).json({ error: `OpenAI error: ${raw.slice(0, 400)}` });
     }
 
-    const data = await resp.json();
-    const output = data.choices?.[0]?.message?.content || '';
+    // Try to extract content from either message.content or text
+    let data = {};
+    try { data = JSON.parse(raw); } catch { /* noop */ }
+    const choice = data?.choices?.[0] || {};
+    const output =
+      choice?.message?.content ??
+      choice?.text ??
+      '';
+
+    if (!output) {
+      return res.status(200).json({
+        output: '',
+        error: 'No content in OpenAI response',
+        debug: raw.slice(0, 600),
+      });
+    }
+
     return res.status(200).json({ output });
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: `Server error: ${e.message}` });
   }
 }
