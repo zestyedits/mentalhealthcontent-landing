@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MentalHealthContent.ai — Create credible mental‑health content with AI</title>
-  <meta name="description" content="Curate and generate ethical, client‑friendly mental‑health content with AI. Try free prompts, then upgrade for unlimited templates, brand voice, and batch generation."/>
+  <title>MentalHealthContent.ai — Create credible mental-health content with AI</title>
+  <meta name="description" content="Generate ethical, audience-friendly mental-health content with AI. Built for clinicians, coaches, educators, creators, and teams. Try free prompts, then upgrade for brand voice, batch generation, and exports."/>
   <style>
     :root {
       --bg: #0b1022;
@@ -32,12 +32,15 @@
     html, body { height: 100%; }
     body {
       margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      background: linear-gradient(180deg, var(--bg), #0b1220 45%, #0f172a 100%);
       color: var(--text); line-height: 1.5;
+      background: radial-gradient(1000px 600px at 10% -10%, color-mix(in oklab, var(--accent) 40%, transparent), transparent 60%),
+                  radial-gradient(900px 500px at 90% 10%, color-mix(in oklab, var(--accent-2) 40%, transparent), transparent 60%),
+                  linear-gradient(180deg, var(--bg), #0b0f24 50%, var(--panel) 120%);
     }
     a { color: var(--accent-2); text-decoration: none; }
     a:hover { text-decoration: underline; }
     .container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 1rem; }
+
     header {
       position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(140%) blur(8px);
       background: rgba(11, 18, 32, 0.7); border-bottom: 1px solid var(--border);
@@ -47,40 +50,49 @@
     .brand svg { width: 28px; height: 28px; }
     .menu { display: flex; gap: 1rem; align-items: center; }
     .menu a { color: var(--text); opacity: 0.9; font-size: .95rem; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border: 1px solid var(--border); background: #101826; color: var(--text); padding: .65rem .95rem; border-radius: .75rem; font-weight: 600; cursor: pointer; transition: transform .04s ease, box-shadow .2s ease; }
-    .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,.25); }
-    .btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent-2) 50%, var(--accent-3)); border-color: transparent; color: #0a0a0a; box-shadow: 0 6px 18px rgba(167,139,250,.25), 0 2px 8px rgba(34,211,238,.18); }
-    .btn.primary:hover { transform: translateY(-2px) scale(1.01); box-shadow: 0 10px 24px rgba(167,139,250,.35), 0 6px 14px rgba(34,211,238,.25); }
-    .btn.ghost { background: transparent; }
-    .hero { padding: 4rem 0 2.5rem; text-align: center; }
-    .hero h1 { font-size: clamp(2.1rem, 2.8vw + 1rem, 3.25rem); line-height: 1.1; margin: .25rem 0 1rem; }
-    .gradient-text { background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
-      -webkit-background-clip: text; background-clip: text; color: transparent; }
-    @keyframes bgShift { 0%{ background-position: 0% 50%; } 50%{ background-position: 100% 50%; } 100%{ background-position: 0% 50%; } }
-    @media (prefers-reduced-motion: no-preference){
-      body { background: linear-gradient(135deg, #0b0f2a, #0a0f1f, #0b0f2a);
-             background-size: 400% 400%; animation: bgShift 24s ease infinite; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+      border: 1px solid var(--border); background: #101826; color: var(--text);
+      padding: .65rem .95rem; border-radius: .75rem; font-weight: 600; cursor: pointer;
+      transition: transform .04s ease, box-shadow .2s ease;
     }
-    .hero p { color: var(--muted); max-width: 760px; margin: 0.25rem auto 1.25rem; font-size: 1.05rem; }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,.25); }
+    .btn.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-color: transparent; color: #0a0a0a;
+      box-shadow: 0 0 0 2px var(--ring), 0 8px 24px rgba(0,0,0,.35);
+    }
+    .btn.primary:hover { transform: translateY(-2px) scale(1.01); }
+    .btn.ghost { background: transparent; }
+
+    .hero { padding: 4rem 0 2.5rem; text-align: center; }
+    .hero h1 {
+      font-size: clamp(2.1rem, 2.8vw + 1rem, 3.25rem); line-height: 1.1; margin: .25rem 0 1rem;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .hero p { color: var(--muted); max-width: 780px; margin: 0.25rem auto 1.25rem; font-size: 1.05rem; }
     .hero .cta { display: flex; gap: .75rem; flex-wrap: wrap; justify-content: center; margin-top: 1.25rem; }
     .hero .badges { display: flex; justify-content: center; gap: .75rem; color: var(--muted); font-size: .9rem; margin-top: .75rem; flex-wrap: wrap; }
+    .pill { display: inline-block; font-size: .75rem; letter-spacing: .2px; border: 1px solid transparent; color: #0a0a0a; padding: .32rem .6rem; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
 
+    .section { padding: 2.5rem 0; }
+    .section h2 { font-size: clamp(1.25rem, 2vw + .8rem, 1.75rem); margin: 0 0 1rem; }
     .grid { display: grid; gap: 1rem; }
     @media (min-width: 900px) {
       .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
       .grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
     }
-
-    .card { background: linear-gradient(180deg, rgba(167,139,250,.08), rgba(34,211,238,.06)), var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1rem; transition: transform .1s ease, box-shadow .2s ease; }
-    .card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.25), 0 0 0 1px rgba(167,139,250,.25) inset; }
+    .card {
+      background: linear-gradient(180deg, rgba(167,139,250,.08), rgba(34,211,238,.06)), var(--card);
+      border: 1px solid var(--border); border-radius: 1rem; padding: 1rem;
+      transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .card:hover { transform: translateY(-2px); border-color: color-mix(in hsl, var(--accent) 30%, var(--border)); box-shadow: 0 10px 30px rgba(0,0,0,.35); }
     .card h3 { margin: .2rem 0 .25rem; font-size: 1.05rem; }
     .card p { color: var(--muted); font-size: .95rem; margin: .25rem 0 .5rem; }
-    .micro { font-size: .85rem; color: var(--muted); }
-
-    .section { padding: 2.5rem 0; }
-    .section h2 { font-size: clamp(1.25rem, 2vw + .8rem, 1.75rem); margin: 0 0 1rem; }
-
-    .pill { display: inline-block; font-size: .75rem; letter-spacing: .2px; border: 1px solid transparent; color: #0a0a0a; padding: .32rem .6rem; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+    .micro { font-size: .9rem; color: var(--muted); }
 
     /* Pricing */
     .pricing { display: grid; gap: 1rem; }
@@ -97,86 +109,50 @@
     .prompt code { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: .9rem; color: #cbd5e1; }
     .toolbar { display: flex; gap: .5rem; justify-content: flex-end; margin-top: .5rem; }
 
-    /* FAQ */
-    details { background: #0c1424; border: 1px solid var(--border); border-radius: .75rem; padding: .75rem 1rem; }
-    details + details { margin-top: .5rem; }
-    details summary { cursor: pointer; font-weight: 600; }
-    details p { color: var(--muted); margin-top: .5rem; }
-
     footer { border-top: 1px solid var(--border); padding: 2rem 0; color: var(--muted); font-size: .9rem; }
 
-    /* Simple modal for sample output */
-    .modal { position: fixed; inset: 0; display: none; background: rgba(0,0,0,.55); align-items: center; justify-content: center; padding: 1rem; }
-    .modal.active { display: flex; }
-    .modal-card { max-width: 720px; width: 100%; background: #0b1220; border: 1px solid var(--border); border-radius: 1rem; padding: 1rem; }
-    .modal-card pre { white-space: pre-wrap; background: #0c1424; padding: .75rem; border-radius: .5rem; overflow: auto; }
-  
-    /* --- Theme Enhancements (vibrant + glow) --- */
-    body { 
-      background: radial-gradient(1000px 600px at 10% -10%, color-mix(in oklab, var(--accent) 40%, transparent), transparent 60%),
-                  radial-gradient(900px 500px at 90% 10%, color-mix(in oklab, var(--accent-2) 40%, transparent), transparent 60%),
-                  linear-gradient(180deg, var(--bg), #0b0f24 50%, var(--panel) 120%);
-    }
-    .hero h1 {
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      -webkit-background-clip: text; background-clip: text; color: transparent;
-      text-shadow: none;
-    }
-    .btn.primary { 
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      border-color: transparent; color: #0b0f1a; 
-      box-shadow: 0 0 0 2px var(--ring), 0 8px 24px rgba(0,0,0,.35);
-    }
-    .btn:hover { box-shadow: 0 10px 24px rgba(0,0,0,.35), 0 0 0 2px var(--ring) inset; }
-    .btn.primary:hover { transform: translateY(-2px) scale(1.01); }
-    .menu a { position: relative; }
-    .menu a::after { content:""; position:absolute; left:0; bottom:-6px; width:0; height:2px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width .2s ease; }
-    .menu a:hover::after { width:100%; }
-    .card { transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease; }
-    .card:hover { transform: translateY(-2px); border-color: color-mix(in hsl, var(--accent) 30%, var(--border)); box-shadow: 0 10px 30px rgba(0,0,0,.35); }
-    .pill { border-color: transparent; background: linear-gradient(90deg, color-mix(in oklab, var(--accent) 20%, #0c1424), color-mix(in oklab, var(--accent-2) 20%, #0c1424)); color: var(--text); opacity:.9; }
+    /* Page transitions */
+    html { scroll-behavior: smooth; }
+    .page-enter { opacity: 0; }
+    .page-enter-active { opacity: 1; transition: opacity .28s ease; }
+    .page-exit { opacity: 1; }
+    .page-exit-active { opacity: 0; transition: opacity .22s ease; }
   </style>
 </head>
 <body>
   <header>
     <div class="container nav">
-      <div class="brand" aria-label="MentalHealthContent.ai home">
+      <a data-xnav class="brand" href="/" aria-label="MentalHealthContent.ai home">
         <!-- Simple brain-heart logo -->
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M12 21s-6-3.8-9-7.1C1 12 1 9.5 2.7 7.8c1.6-1.6 4.3-1.5 6 0L12 9l3.3-1.2c1.7-1.5 4.4-1.6 6 0C22 9.5 22 12 21 13.9 18 17.2 12 21 12 21z" fill="url(#g)"/>
-          <defs>
-            <linearGradient id="g" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#22c55e"/>
-              <stop offset="1" stop-color="#06b6d4"/>
-            </linearGradient>
-          </defs>
+          <defs><linearGradient id="g" x1="0" y1="0" x2="24" y2="24"><stop stop-color="#22c55e"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs>
         </svg>
         <span>MentalHealthContent.ai</span>
-      </div>
+      </a>
       <nav class="menu" aria-label="primary">
-        <a href="#examples">Examples</a>
-        <a href="#prompts">Free Prompts</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#faq">FAQ</a>
-        <button class="btn ghost" id="themeToggle" title="Toggle theme">✨ Theme</button>
-        <a class="btn ghost" href="#join">Sign in</a>
-        <a class="btn primary" href="#start">Start free</a>
+        <a data-xnav href="/#examples">Examples</a>
+        <a data-xnav href="/#prompts">Free Prompts</a>
+        <a data-xnav href="/#pricing">Pricing</a>
+        <a data-xnav href="/#faq">FAQ</a>
+        <a data-xnav class="btn ghost" href="/login">Sign in</a>
+        <a data-xnav class="btn primary" href="/generate?trial=1">Try generator</a>
       </nav>
     </div>
   </header>
 
   <main>
     <section class="hero container" id="start">
-      <span class="pill">Built by a clinician • Evidence‑informed</span>
-      <h1 class="gradient-text">Create credible mental‑health content with AI</h1>
-      <p>Generate client‑friendly posts, worksheet outlines, psychoeducation blurbs, video scripts, and more. Start with <strong>free prompts</strong> and sample outputs. Upgrade for brand voice, batch generation, and export‑ready assets. <em>Not for clinical diagnosis or crisis use.</em></p>
+      <span class="pill">Evidence-informed • Audience-friendly</span>
+      <h1>Create credible mental-health content with AI</h1>
+      <p>Built for <strong>clinicians</strong>, <strong>coaches</strong>, <strong>educators</strong>, <strong>creators</strong>, and <strong>teams</strong>. Generate posts, worksheet outlines, psychoeducation blurbs, video scripts, and more—fast. Start with <strong>free prompts</strong>; upgrade for brand voice, batch generation, and export-ready assets. <em>Not for clinical diagnosis or crisis use.</em></p>
       <div class="cta">
-        <a class="btn primary" href="/generate?trial=1">Try 3 free prompts</a>
-        <button class="btn" id="viewSample">See a sample output</button>
+        <a data-xnav class="btn primary" href="/generate?trial=1">Try 3 free prompts</a>
+        <a data-xnav class="btn" href="/login">Sign in</a>
       </div>
       <div class="badges">
-        <span class="pill">No PHI • HIPAA‑conscious workflows</span>
-        <span class="pill">Reading‑level & tone controls</span>
+        <span class="pill">No PHI • HIPAA-conscious workflows</span>
+        <span class="pill">Reading-level & tone controls</span>
         <span class="pill">Citations & disclaimers helper</span>
       </div>
     </section>
@@ -186,18 +162,18 @@
       <div class="grid cols-3">
         <div class="card">
           <h3>Instagram carousel copy</h3>
-          <p class="micro">Topic: 5‑4‑3‑2‑1 grounding • Audience: teens • Tone: warm, validating</p>
-          <p>Hook, 7 concise slides, alt‑text suggestions, CTA with crisis disclaimer.</p>
+          <p class="micro">Topic: 5-4-3-2-1 grounding • Audience: teens • Tone: warm, validating</p>
+          <p>Hook, concise slides, alt-text suggestions, and a final crisis disclaimer.</p>
         </div>
         <div class="card">
           <h3>Worksheet outline</h3>
           <p class="micro">Modality: CBT • Skill: thought reframing • Level: 6th grade</p>
-          <p>Title, goal, step‑by‑step sections, example, reflection questions, and printable layout notes.</p>
+          <p>Title, goal, step-by-step sections, example, reflection questions, and printable notes.</p>
         </div>
         <div class="card">
           <h3>Short video script</h3>
           <p class="micro">Format: 60s TikTok • Topic: DBT STOP skill</p>
-          <p>Hook, beats (0–60s), on‑screen captions, B‑roll ideas, and clear disclaimer slide.</p>
+          <p>Hook, timestamped beats, on-screen captions, B-roll ideas, and a clear disclaimer slide.</p>
         </div>
       </div>
     </section>
@@ -207,34 +183,38 @@
       <div class="grid cols-2">
         <div class="prompt">
           <div class="pill">IG Carousel</div>
-          <code id="p1">Write a 7‑slide Instagram carousel about the 5‑4‑3‑2‑1 grounding technique for teens with anxiety. Tone: warm and validating. Reading level: 6th grade. Include alt‑text suggestions for each slide and a short crisis disclaimer on the final slide.</code>
+          <code id="p1">Write a 7-slide Instagram carousel about the 5-4-3-2-1 grounding technique for teens with anxiety. Tone: warm and validating. Reading level: 6th grade. Include alt-text suggestions for each slide and a short crisis disclaimer on the final slide.</code>
           <div class="toolbar">
             <button class="btn" onclick="copy('#p1')">Copy</button>
+            <a data-xnav class="btn primary" href="/generate?trial=1">Open in generator</a>
           </div>
         </div>
         <div class="prompt">
           <div class="pill">Worksheet Outline</div>
-          <code id="p2">Create a printable worksheet outline teaching CBT thought reframing. Sections: (1) What is a thought? (2) Spotting thinking traps, (3) Reframe steps with example, (4) Try it, (5) Reflection. Reading level: 5th–6th grade. Include notes for a black‑and‑white printable layout.</code>
+          <code id="p2">Create a printable worksheet outline teaching CBT thought reframing. Sections: (1) What is a thought? (2) Spotting thinking traps, (3) Reframe steps with example, (4) Try it, (5) Reflection. Reading level: 5th–6th grade. Include notes for a black-and-white printable layout.</code>
           <div class="toolbar">
             <button class="btn" onclick="copy('#p2')">Copy</button>
+            <a data-xnav class="btn primary" href="/generate?trial=1">Open in generator</a>
           </div>
         </div>
         <div class="prompt">
           <div class="pill">Video Script</div>
-          <code id="p3">Draft a 60‑second video script explaining the DBT STOP skill. Include timestamps (0–60s), on‑screen captions, simple analogies, and a final slide with a non‑crisis disclaimer.</code>
+          <code id="p3">Draft a 60-second video script explaining the DBT STOP skill. Include timestamps (0–60s), on-screen captions, simple analogies, and a final slide with a non-crisis disclaimer.</code>
           <div class="toolbar">
             <button class="btn" onclick="copy('#p3')">Copy</button>
+            <a data-xnav class="btn primary" href="/generate?trial=1">Open in generator</a>
           </div>
         </div>
         <div class="prompt">
           <div class="pill">Blog/SEO</div>
-          <code id="p4">Generate an outline for a 1200‑word blog post on “What is ACT therapy?” for a general audience. Include meta title/description suggestions, FAQ schema ideas, and a sidebar callout that clarifies this is educational content, not medical advice.</code>
+          <code id="p4">Generate an outline for a 1200-word blog post on “What is ACT therapy?” for a general audience. Include meta title/description suggestions, FAQ schema ideas, and a sidebar callout clarifying this is educational content, not medical advice.</code>
           <div class="toolbar">
             <button class="btn" onclick="copy('#p4')">Copy</button>
+            <a data-xnav class="btn primary" href="/generate?trial=1">Open in generator</a>
           </div>
         </div>
       </div>
-      <p class="micro" style="margin-top:.75rem">Sign up to unlock more templates, tone controls, brand voice, batch generation, and exports.</p>
+      <p class="micro" style="margin-top:.75rem">No account needed for your first 2 generations. Sign in to save and export DOCX.</p>
     </section>
 
     <section class="section container" id="pricing">
@@ -248,7 +228,7 @@
             <li>Starter prompt library</li>
             <li>Watermarked exports</li>
           </ul>
-          <button class="btn" onclick="scrollToJoin()">Start free</button>
+          <a data-xnav class="btn" href="/generate?trial=1">Start free</a>
         </div>
         <div class="price-card" style="border-color:#1e3a8a; box-shadow: 0 0 0 1px #1e3a8a inset;">
           <h3>Creator</h3>
@@ -256,19 +236,19 @@
           <ul class="features">
             <li>200 credits / mo</li>
             <li>Brand voice & reading level</li>
-            <li>Export: B&W printable, captions</li>
+            <li>Export: printable & captions</li>
           </ul>
-          <button class="btn primary" onclick="scrollToJoin()">Upgrade</button>
+          <a data-xnav class="btn primary" href="/login">Upgrade</a>
         </div>
         <div class="price-card">
           <h3>Pro</h3>
           <div class="price">$29 / mo</div>
           <ul class="features">
             <li>800 credits / mo</li>
-            <li>Batch generation & versions</li>
+            <li>Batch & versions</li>
             <li>Citation helper & disclaimers</li>
           </ul>
-          <button class="btn" onclick="scrollToJoin()">Go Pro</button>
+          <a data-xnav class="btn" href="/login">Go Pro</a>
         </div>
         <div class="price-card">
           <h3>Agency</h3>
@@ -278,28 +258,10 @@
             <li>Custom templates & styles</li>
             <li>Priority support</li>
           </ul>
-          <button class="btn" onclick="scrollToJoin()">Contact</button>
+          <a data-xnav class="btn" href="/login">Contact</a>
         </div>
       </div>
-      <p class="micro" style="margin-top:.5rem">Or buy credits as you go • One‑time packs available at checkout.</p>
-    </section>
-
-    <section class="section container" id="join">
-      <h2>Get early access</h2>
-      <p class="micro">We’ll email you when your account is ready. No spam, unsubscribe anytime.</p>
-      <form class="card" method="POST" action="https://formspree.io/f/your-form-id" onsubmit="thanks(event)">
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email" required placeholder="you@example.com" style="width:100%;margin:.35rem 0 0.75rem;padding:.7rem;border-radius:.6rem;border:1px solid var(--border);background:#0c1424;color:var(--text)"/>
-        <label for="role">I’m a...</label>
-        <select id="role" name="role" style="width:100%;margin:.35rem 0 .9rem;padding:.7rem;border-radius:.6rem;border:1px solid var(--border);background:#0c1424;color:var(--text)">
-          <option>Therapist / Clinician</option>
-          <option>Coach / Educator</option>
-          <option>Content Creator</option>
-          <option>Agency / Org</option>
-          <option>Other</option>
-        </select>
-        <button class="btn primary" type="submit">Join the waitlist</button>
-      </form>
+      <p class="micro" style="margin-top:.5rem">Or buy credits as you go • One-time packs available at checkout.</p>
     </section>
 
     <section class="section container" id="faq">
@@ -325,78 +287,48 @@
 
   <footer>
     <div class="container">
-      <div>MentalHealthContent.ai • Built by a licensed clinician • © <span id="yr"></span></div>
-      <div style="margin-top:.5rem">Educational use only. Not for crisis or emergency use. <a href="#">Terms</a> · <a href="#">Privacy</a> · <a href="#">Contact</a></div>
+      <div>MentalHealthContent.ai • © <span id="yr"></span></div>
+      <div style="margin-top:.5rem">Educational use only. Not for crisis or emergency use. <a data-xnav href="/terms">Terms</a> · <a data-xnav href="/privacy">Privacy</a> · <a data-xnav href="/contact">Contact</a></div>
     </div>
   </footer>
 
-  <div class="modal" id="sampleModal" role="dialog" aria-modal="true" aria-labelledby="sampleTitle">
-    <div class="modal-card">
-      <h3 id="sampleTitle" style="margin-top:0">Sample Output: 7‑Slide Carousel — 5‑4‑3‑2‑1 Grounding</h3>
-      <pre>
-Slide 1 (Hook): “Anxiety spiking? Try this quick grounding trick.”
-Slide 2: “5 things you can SEE…” + short examples
-Slide 3: “4 things you can FEEL (touch)…” + safe suggestions
-Slide 4: “3 things you can HEAR…”
-Slide 5: “2 things you can SMELL…” + alternatives
-Slide 6: “1 thing you can TASTE…”
-Slide 7 (CTA + Disclaimer): “You’re not alone. Save for later.” + “Educational only—if you’re in crisis, call/text local resources (e.g., 988 in the U.S.).”
-Alt‑text notes: Each slide includes concise, descriptive alt‑text for accessibility.
-      </pre>
-      <div style="display:flex; gap:.5rem; justify-content:flex-end; margin-top:.75rem;">
-        <button class="btn" onclick="closeSample()">Close</button>
-      </div>
-    </div>
-  </div>
-
   <script>
-    const yr = document.getElementById('yr');
-    yr.textContent = new Date().getFullYear();
+    // Page transitions
+    document.documentElement.classList.add('page-enter');
+    requestAnimationFrame(()=> {
+      document.documentElement.classList.add('page-enter-active');
+      document.documentElement.classList.remove('page-enter');
+    });
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('a[data-xnav]');
+      if (!a) return;
+      const url = new URL(a.href, location.origin);
+      if (url.origin !== location.origin || (a.target && a.target !== '_self')) return;
+      e.preventDefault();
+      document.documentElement.classList.add('page-exit');
+      requestAnimationFrame(() => {
+        document.documentElement.classList.add('page-exit-active');
+        setTimeout(() => { location.href = a.href; }, 180);
+      });
+    });
 
+    // Footer year
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    // Copy helper
     function copy(sel){
       const el = document.querySelector(sel);
       const r = document.createRange();
       r.selectNode(el);
       const s = window.getSelection();
-      s.removeAllRanges();
-      s.addRange(r);
+      s.removeAllRanges(); s.addRange(r);
       try { document.execCommand('copy'); } catch(e) {}
       s.removeAllRanges();
       const btn = el.parentElement.querySelector('button');
       const old = btn.textContent; btn.textContent = 'Copied!';
-      setTimeout(()=> btn.textContent = old, 1000);
+      setTimeout(()=> btn.textContent = old, 900);
     }
-
-    function scrollToJoin(){ document.querySelector('#join').scrollIntoView({behavior:'smooth'}); }
-
-    const modal = document.getElementById('sampleModal');
-    document.getElementById('viewSample').addEventListener('click', ()=> modal.classList.add('active'));
-    function closeSample(){ modal.classList.remove('active'); }
-
-    function thanks(e){
-      e.preventDefault();
-      const form = e.target;
-      const data = new FormData(form);
-      fetch(form.action, { method: 'POST', body: data })
-        .then(()=> alert('Thanks! Please check your email soon.'))
-        .catch(()=> alert('Submitted.'))
-    }
-  
-    // Theme toggle
-    (function(){
-      const root = document.documentElement;
-      const saved = localStorage.getItem('mhc_theme');
-      if (saved) { if (saved) root.setAttribute('data-theme', saved); }
-      const tgl = document.getElementById('themeToggle');
-      function setState(){ if(!tgl) return; tgl.setAttribute('aria-pressed', root.getAttribute('data-theme')==='vibrant'); }
-      setState();
-      if (tgl) tgl.addEventListener('click', ()=>{
-        const next = root.getAttribute('data-theme')==='vibrant' ? '' : 'vibrant';
-        if (next) root.setAttribute('data-theme', next); else root.removeAttribute('data-theme');
-        localStorage.setItem('mhc_theme', next);
-        setState();
-      });
-    })();
+    window.copy = copy;
   </script>
 </body>
 </html>
