@@ -4,8 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Generate — MentalHealthContent.ai</title>
-  <meta name="description" content="Generate client-friendly mental-health content with AI. Export text or DOCX."/>
-  <!-- Same design tokens / look as index.html -->
+  <meta name="description" content="Generate client-friendly mental-health content with AI. Export text or DOCX.">
+
+  <!-- Same design tokens and styles as index.html -->
   <style>
     :root {
       --bg: #0b1022;
@@ -54,13 +55,22 @@
     .brand svg { width: 28px; height: 28px; }
     .menu { display: flex; gap: 1rem; align-items: center; }
     .menu a { color: var(--text); opacity: 0.9; font-size: .95rem; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border: 1px solid var(--border); background: #101826; color: var(--text); padding: .65rem .95rem; border-radius: .75rem; font-weight: 600; cursor: pointer; transition: transform .04s ease, box-shadow .2s ease; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+      border: 1px solid var(--border); background: #101826; color: var(--text);
+      padding: .65rem .95rem; border-radius: .75rem; font-weight: 600; cursor: pointer;
+      transition: transform .04s ease, box-shadow .2s ease;
+    }
     .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,.25); }
-    .btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-color: transparent; color: #0a0a0a; box-shadow: 0 0 0 2px var(--ring), 0 8px 24px rgba(0,0,0,.35); }
+    .btn.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-color: transparent; color: #0a0a0a;
+      box-shadow: 0 0 0 2px var(--ring), 0 8px 24px rgba(0,0,0,.35);
+    }
     .btn.primary:hover { transform: translateY(-2px) scale(1.01); }
     .btn.ghost { background: transparent; }
 
-    /* Hero (same typographic scale) */
+    /* Hero */
     .hero { padding: 2.75rem 0 1.25rem; }
     .hero h1 {
       font-size: clamp(1.9rem, 2.4vw + 1rem, 2.8rem);
@@ -68,9 +78,14 @@
       background: linear-gradient(90deg, var(--accent), var(--accent-2));
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
-    .hero .meta { color: var(--muted); font-size: .95rem; }
+    .meta { color: var(--muted); font-size: .95rem; }
+    .pill {
+      display: inline-block; font-size: .75rem; letter-spacing: .2px; border: 1px solid transparent;
+      color: #0a0a0a; padding: .32rem .6rem; border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
 
-    /* Cards (identical feel) */
+    /* Cards + layout (match index) */
     .card {
       background: linear-gradient(180deg, rgba(167,139,250,.08), rgba(34,211,238,.06)), var(--card);
       border: 1px solid var(--border); border-radius: 1rem; padding: 1rem;
@@ -78,9 +93,9 @@
     }
     .card:hover { transform: translateY(-2px); border-color: color-mix(in hsl, var(--accent) 30%, var(--border)); box-shadow: 0 10px 30px rgba(0,0,0,.35); }
 
-    /* Generate studio layout (left rail + right canvas) */
     .studio { display: grid; gap: 1rem; margin: 1rem 0 2rem; align-items: start; }
     @media (min-width: 980px) { .studio { grid-template-columns: 390px minmax(0,1fr); } }
+
     .rail h3, .canvas h3 { margin: .2rem 0 .6rem; font-size: 1.05rem; }
     label { display:block; font-weight:600; margin:.4rem 0 .35rem; }
     input, select, textarea {
@@ -88,24 +103,25 @@
       border:1px solid var(--border); border-radius:.7rem; padding:.7rem .85rem; outline:none;
       transition: border-color .2s ease, box-shadow .2s ease; font-size:1rem;
     }
-    input:focus, select:focus, textarea:focus { border-color: #5b7fff; box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 25%, transparent); }
+    input:focus, select:focus, textarea:focus {
+      border-color: #5b7fff;
+      box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 25%, transparent);
+    }
     .actions { display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; }
     .right { margin-left:auto; color: var(--muted); font-size:.9rem; }
 
-    /* Output block */
     .out { border:1px solid var(--border); background:#0c1424; border-radius:.7rem; padding:.9rem; max-height:60vh; overflow:auto; }
     pre { margin:0; white-space:pre-wrap; word-wrap:break-word; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size:.95rem; line-height:1.6; max-width: 72ch; }
 
-    .pill { display:inline-block; font-size: .75rem; letter-spacing: .2px; border: 1px solid transparent; color: #0a0a0a; padding: .32rem .6rem; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
-    .micro { font-size: .9rem; color: var(--muted); }
     footer { border-top: 1px solid var(--border); padding: 2rem 0; color: var(--muted); font-size: .9rem; margin-top:.5rem; }
+    .micro { font-size:.9rem; color: var(--muted); }
   </style>
 
   <!-- DOCX generator (client-side) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.3.2/docx.umd.min.js" defer></script>
 </head>
 <body>
-  <!-- Header (same markup as index.html) -->
+  <!-- Header -->
   <header>
     <div class="container nav">
       <div class="brand" aria-label="MentalHealthContent.ai home">
@@ -127,16 +143,19 @@
   </header>
 
   <main class="container">
-    <!-- Hero strip to match index rhythm -->
+    <!-- Hero -->
     <section class="hero">
-      <span class="pill">Beta • Ethical & evidence-informed</span>
       <h1>Generate client-friendly content</h1>
-      <p class="meta">Start with a topic and format. You’ll get a clean, copy-ready draft. Export as text or DOCX. <em>Educational use only.</em></p>
+      <p class="meta">
+        Start with a topic and format. You’ll get a clean, copy-ready draft. Export as text or DOCX.
+        <em> Educational use only.</em>
+        <span id="creditPill" class="pill" style="margin-left:.5rem">Free credits left: 2</span>
+      </p>
     </section>
 
-    <!-- Studio: left controls, right output (cards that match index) -->
+    <!-- Studio -->
     <section class="studio">
-      <!-- Rail -->
+      <!-- Left: inputs -->
       <div class="card rail">
         <h3>Your request</h3>
         <form id="genForm">
@@ -156,17 +175,20 @@
             <button class="btn" type="button" id="btnSample">Use sample</button>
             <span class="right" id="status"></span>
           </div>
-          <p class="micro" style="margin:.6rem 0 0">Calls <code>POST /api/generate</code> with <code>{ topic, format }</code>.</p>
+
+          <p class="micro" style="margin:.6rem 0 0">
+            Calls <code>POST /api/generate</code> with <code>{ topic, format }</code>.
+          </p>
         </form>
 
         <hr style="border:none;border-top:1px solid var(--border); margin:1rem 0">
         <div class="actions" style="gap:.5rem">
-          <button class="btn" id="btnDocx">Generate & Download DOCX</button>
+          <button class="btn" id="btnDocx" title="Sign in to export DOCX" disabled>Generate & Download DOCX</button>
           <button class="btn" id="btnCopy" disabled>Copy output</button>
         </div>
       </div>
 
-      <!-- Canvas -->
+      <!-- Right: output -->
       <div class="card canvas" aria-live="polite">
         <h3>Output</h3>
         <div class="out"><pre id="out">Run a generation to see output…</pre></div>
@@ -182,8 +204,27 @@
   </footer>
 
   <script>
-    // Year
+    // Footer year
     document.getElementById('yr').textContent = new Date().getFullYear();
+
+    // --- Trial credits (temporary client-side until backend) ---
+    const TRIAL_KEY = 'mhc_trial_uses_v1';
+    const MAX_FREE = 2; // free generations without account
+    function getTrialUses(){ return Number(localStorage.getItem(TRIAL_KEY) || 0); }
+    function incTrialUses(){ localStorage.setItem(TRIAL_KEY, String(getTrialUses() + 1)); }
+    function remainingFree(){ return Math.max(0, MAX_FREE - getTrialUses()); }
+    function updateCreditPill(){
+      const pill = document.getElementById('creditPill');
+      if (pill) pill.textContent = `Free credits left: ${remainingFree()}`;
+    }
+    // If they came via /generate?trial=1, focus topic
+    (function initTrial(){
+      updateCreditPill();
+      const url = new URL(location.href);
+      if (url.searchParams.get('trial') === '1') {
+        document.getElementById('topic').focus();
+      }
+    })();
 
     // Elements
     const form = document.getElementById('genForm');
@@ -193,6 +234,7 @@
     const out = document.getElementById('out');
     const copyBtn = document.getElementById('btnCopy');
     const sampleBtn = document.getElementById('btnSample');
+    const genBtn = document.getElementById('btnGenerate');
     const docxBtn = document.getElementById('btnDocx');
 
     function setStatus(msg){ statusEl.textContent = msg || ''; }
@@ -215,7 +257,22 @@
       }catch(e){}
     });
 
+    // Anonymous gating: if out of free credits, lock the Generate button and nudge to sign up
+    function enforceTrialGate(){
+      if (remainingFree() === 0){
+        genBtn.disabled = true;
+        genBtn.textContent = 'Create a free account to keep going';
+        genBtn.onclick = () => location.href = 'https://app.mentalhealthcontent.ai/signup';
+      }
+    }
+    enforceTrialGate();
+
     async function runGeneration(payload){
+      if (remainingFree() === 0){
+        enforceTrialGate();
+        return null;
+      }
+
       setStatus("Generating…"); setOut("");
       try{
         const res = await fetch('/api/generate', {
@@ -231,6 +288,12 @@
         const data = await res.json();
         const text = data.output || data.error || data.debug || '';
         setOut(text || 'No output');
+
+        if (text){
+          incTrialUses();
+          updateCreditPill();
+          enforceTrialGate();
+        }
         return text || '';
       }catch(err){
         setOut('Fetch error: ' + err.message);
@@ -247,7 +310,7 @@
       await runGeneration(payload);
     });
 
-    // DOCX export (robust: waits for library; falls back to .txt on failure)
+    // --- DOCX export (gated for sign-in; robust loader; fallback to .txt) ---
     function waitForDocx(ms=8000){
       return new Promise((resolve, reject) => {
         const t0 = Date.now();
@@ -264,42 +327,50 @@
       document.body.appendChild(a); a.click(); URL.revokeObjectURL(a.href); a.remove();
     }
 
+    // NOTE: Keep DOCX disabled for anonymous users until you wire real auth.
+    // (If you want to allow DOCX during the 2 free tries, just remove 'disabled' from the button and next line.)
     docxBtn.addEventListener('click', async () => {
-      const payload = { topic: topic.value?.trim(), format: formatSel.value };
-      if(!payload.topic){ topic.focus(); return; }
-
-      // Ensure we have output first
-      let text = out.textContent?.trim();
-      if (!text) text = await runGeneration(payload);
-      if (!text) return;
-
-      try{
-        const docx = await waitForDocx();
-        const { Document, Packer, Paragraph, HeadingLevel, TextRun } = docx;
-
-        const lines = text.split(/\r?\n/);
-        const children = [];
-        for (const line of lines){
-          if(!line.trim()){ children.push(new Paragraph("")); continue; }
-          const isH3 = /^#{3}\s+/.test(line.trim());
-          const content = isH3 ? line.replace(/^#{3}\s+/, "") : line;
-          children.push(
-            isH3
-              ? new Paragraph({ text: content, heading: HeadingLevel.HEADING_3 })
-              : new Paragraph({ children: [ new TextRun({ text: content }) ] })
-          );
-        }
-
-        const doc = new Document({ sections: [{ properties: {}, children }] });
-        const blob = await Packer.toBlob(doc);
-        const fname = `MHC_${(payload.topic || 'document').replace(/[^a-z0-9]+/gi,'_')}.docx`;
-        downloadBlob(blob, fname);
-      }catch(err){
-        // Fallback to .txt so users always get a file
-        downloadBlob(new Blob([text], {type: "text/plain;charset=utf-8"}), "MHC_document.txt");
-        alert("DOCX export failed or was blocked. A .txt file was downloaded instead.\n\nReason: " + err.message);
+      // In production, check user session here instead of simple disable.
+      if (docxBtn.disabled) {
+        alert('Sign in to export DOCX.');
+        location.href = 'https://app.mentalhealthcontent.ai/login';
+        return;
       }
     });
+
+    // If you later decide to allow DOCX in trial, use the handler below instead and remove the above listener & disabled attr.
+    // function enableDocxExport(){
+    //   docxBtn.disabled = false; docxBtn.title = '';
+    //   docxBtn.onclick = async () => {
+    //     const payload = { topic: topic.value?.trim(), format: formatSel.value };
+    //     if(!payload.topic){ topic.focus(); return; }
+    //     let text = out.textContent?.trim();
+    //     if(!text) text = await runGeneration(payload);
+    //     if(!text) return;
+    //
+    //     try{
+    //       const docx = await waitForDocx();
+    //       const { Document, Packer, Paragraph, HeadingLevel, TextRun } = docx;
+    //       const children = [];
+    //       for (const line of text.split(/\r?\n/)){
+    //         if(!line.trim()){ children.push(new Paragraph("")); continue; }
+    //         const isH3 = /^#{3}\s+/.test(line.trim());
+    //         const content = isH3 ? line.replace(/^#{3}\s+/, "") : line;
+    //         children.push(isH3
+    //           ? new Paragraph({ text: content, heading: HeadingLevel.HEADING_3 })
+    //           : new Paragraph({ children: [ new TextRun({ text: content }) ] })
+    //         );
+    //       }
+    //       const doc = new Document({ sections: [{ properties: {}, children }] });
+    //       const blob = await Packer.toBlob(doc);
+    //       const fname = `MHC_${(payload.topic || 'document').replace(/[^a-z0-9]+/gi,'_')}.docx`;
+    //       downloadBlob(blob, fname);
+    //     }catch(err){
+    //       downloadBlob(new Blob([text], {type: "text/plain;charset=utf-8"}), "MHC_document.txt");
+    //       alert("DOCX export failed or was blocked. A .txt file was downloaded instead.\n\nReason: " + err.message);
+    //     }
+    //   };
+    // }
   </script>
 </body>
 </html>
