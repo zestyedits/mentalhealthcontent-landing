@@ -9,13 +9,12 @@
   <!-- Inter font -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
 
   <style>
     :root{
       --bg: #0b1022;
       --panel:#0e1436;
-      --card:#0b1028;
       --border:#1e2440;
       --text:#eef2ff;
       --muted:#c7d2fe;
@@ -23,8 +22,6 @@
       --accent2:#22d3ee;  /* cyan   */
       --shadow: 0 10px 30px rgba(17,24,39,.35);
       --radius: 16px;
-      --pad: 18px;
-      --gap: 18px;
     }
 
     *{box-sizing:border-box}
@@ -33,9 +30,37 @@
       margin:0;
       font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
       color:var(--text);
-      background: linear-gradient(135deg, #0b0f2a, #0a0f1f, #0b0f2a);
+      background: radial-gradient(1200px 800px at 50% -100px, rgba(139,92,246,.25), transparent 60%),
+                  linear-gradient(135deg, #0b0f2a, #0a0f1f, #0b0f2a);
       background-size: 400% 400%;
       animation: bgShift 24s ease infinite;
     }
     @media (prefers-reduced-motion: reduce){ body{animation:none} }
-    @keyframes bgShift { 0%{background-position:0% 50%} 50%{
+    @keyframes bgShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+
+    a{color:inherit;text-decoration:none}
+
+    /* Center the whole page in a wider frame for balance */
+    .container{width:min(1200px, 92%); margin:0 auto}
+
+    /* Header */
+    header{position:sticky;top:0;z-index:50;backdrop-filter: blur(10px)}
+    .nav{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:12px 0;
+    }
+    .brand{display:flex;align-items:center;gap:.6rem;font-weight:800;letter-spacing:.2px}
+    .brand svg{width:26px;height:26px;flex:0 0 auto}
+    .menu{display:flex;gap:.6rem;align-items:center}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+      padding:.5rem .85rem;border-radius:12px;border:1px solid transparent;
+      font-weight:600;line-height:1;cursor:pointer;transition:transform .15s ease, box-shadow .15s ease, border-color .2s ease;
+      text-wrap:nowrap;
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .btn.primary{
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color:#0a0f1f; box-shadow: 0 8px 22px rgba(167,139,250,.25), 0 4px 12px rgba(34,211,238,.18);
+    }
+    .btn.ghost{background:transparent;border-color:rgba(231
