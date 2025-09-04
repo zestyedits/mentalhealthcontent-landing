@@ -78,31 +78,32 @@ pre{white-space:pre-wrap;background:#0a1022;border:1px solid var(--border);paddi
 <div class="container footer">Educational use only. Not for clinical diagnosis or crisis use. © 2025</div>
 
 
-  <script>
-    const form = document.getElementById('genForm');
-    const topic = document.getElementById('topic');
-    const format = document.getElementById('format');
-    const out = document.getElementById('out');
-    const statusEl = document.getElementById('status');
+<script>
+const form = document.getElementById('genForm');
+const topic = document.getElementById('topic');
+const format = document.getElementById('format');
+const out = document.getElementById('out');
+const statusEl = document.getElementById('status');
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      statusEl.textContent = 'Working...';
-      out.textContent = '';
-      try {
-        const res = await fetch('/api/generate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ topic: topic.value, format: format.value })
-        });
-        const data = await res.json();
-        out.textContent = data.output || 'No output';
-        statusEl.textContent = '';
-      } catch (err) {
-        out.textContent = 'Error: ' + err.message;
-        statusEl.textContent = '';
-      }
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  statusEl.textContent = 'Working...';
+  out.textContent = '';
+  try {
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ topic: topic.value, format: format.value })
     });
-  </script>
+    const data = await res.json();
+    // show any error/debug text if present
+    out.textContent = data.output || data.error || data.debug || 'No output';
+  } catch (err) {
+    out.textContent = 'Fetch error: ' + err.message;
+  } finally {
+    statusEl.textContent = '';
+  }
+});
+</script>
 </body>
 </html>
