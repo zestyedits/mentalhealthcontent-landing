@@ -1,0 +1,24 @@
+{
+  "rewrites": [
+    {
+      "source": "/examples",
+      "destination": "/examples.html"
+    },
+    {
+      "source": "/free-prompts",
+      "destination": "/free-prompts.html"
+    },
+    {
+      "source": "/pricing",
+      "destination": "/pricing.html"
+    },
+    {
+      "source": "/faq",
+      "destination": "/faq.html"
+    },
+    {
+      "source": "/generate",
+      "destination": "/generate.html"
+    }
+  ]
+}
