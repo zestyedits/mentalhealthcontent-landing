@@ -4,24 +4,35 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Generate — MentalHealthContent.ai</title>
-  <meta name="description" content="Generate client-friendly mental-health content using ethical, evidence-informed AI prompts.">
+  <meta name="description" content="Generate client-friendly mental-health content using ethical, evidence-informed AI." />
 
   <!-- Inter font -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
 
+  <!-- DOCX generator (client-side) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.3.2/docx.umd.min.js" defer></script>
+
   <style>
     :root{
-      --bg: #0b1022;
-      --panel:#0e1436;
-      --border:#1e2440;
-      --text:#eef2ff;
-      --muted:#c7d2fe;
-      --accent:#8b5cf6;   /* violet */
-      --accent2:#22d3ee;  /* cyan   */
-      --shadow: 0 10px 30px rgba(17,24,39,.35);
-      --radius: 16px;
+      /* Theme */
+      --bg: #0a0f1f;
+      --bg-2:#0c1226;
+      --surface:#0f1733;
+      --border:#1f2a4a;
+      --ink:#eaf0ff;
+      --muted:#bfc9ff;
+      --brand-1:#8b5cf6; /* violet */
+      --brand-2:#22d3ee; /* cyan   */
+      --ok:#22c55e;
+      --radius:18px;
+      --shadow: 0 10px 28px rgba(11,17,35,.35);
+
+      /* Layout metrics */
+      --container: 1180px;
+      --rail: 380px;
+      --gap: 28px;
     }
 
     *{box-sizing:border-box}
@@ -29,39 +40,31 @@
     body{
       margin:0;
       font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      color:var(--text);
-      background: radial-gradient(1200px 800px at 50% -100px, rgba(139,92,246,.25), transparent 60%),
-                  linear-gradient(135deg, #0b0f2a, #0a0f1f, #0b0f2a);
-      background-size: 400% 400%;
-      animation: bgShift 24s ease infinite;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 600px at 50% -120px, rgba(139,92,246,.25), transparent 60%),
+        linear-gradient(135deg, #0a0f1f, #0b1022 45%, #0a0f1f 100%);
     }
-    @media (prefers-reduced-motion: reduce){ body{animation:none} }
-    @keyframes bgShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-
     a{color:inherit;text-decoration:none}
 
-    /* Center the whole page in a wider frame for balance */
-    .container{width:min(1200px, 92%); margin:0 auto}
+    /* Container stays perfectly centered and capped */
+    .container{width:min(var(--container), 92%); margin:0 auto}
 
-    /* Header */
-    header{position:sticky;top:0;z-index:50;backdrop-filter: blur(10px)}
-    .nav{
-      display:flex;align-items:center;justify-content:space-between;
-      padding:12px 0;
-    }
+    /* Header (keep your existing nav structure) */
+    header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(120%) blur(10px)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
     .brand{display:flex;align-items:center;gap:.6rem;font-weight:800;letter-spacing:.2px}
     .brand svg{width:26px;height:26px;flex:0 0 auto}
     .menu{display:flex;gap:.6rem;align-items:center}
     .btn{
       display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
-      padding:.5rem .85rem;border-radius:12px;border:1px solid transparent;
+      padding:.5rem .9rem;border-radius:12px;border:1px solid transparent;
       font-weight:600;line-height:1;cursor:pointer;transition:transform .15s ease, box-shadow .15s ease, border-color .2s ease;
-      text-wrap:nowrap;
     }
     .btn:hover{transform:translateY(-2px)}
     .btn.primary{
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color:#0a0f1f; box-shadow: 0 8px 22px rgba(167,139,250,.25), 0 4px 12px rgba(34,211,238,.18);
+      background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+      color:#071018; box-shadow: 0 8px 22px rgba(167,139,250,.25), 0 4px 12px rgba(34,211,238,.18);
     }
     .btn.ghost{background:transparent;border-color:rgba(231,229,255,.1);color:var(--muted)}
     .btn.ghost:hover{border-color:rgba(231,229,255,.25)}
@@ -81,35 +84,36 @@
     .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace}
 
     /* Hero */
-    .hero{padding:26px 0 6px}
-    .hero h1{font-size:clamp(1.8rem, 1.1rem + 2.8vw, 2.4rem);margin:.2rem 0 .55rem;line-height:1.12}
+    .hero{padding:28px 0 8px}
+    .hero h1{font-size:clamp(1.9rem, 1rem + 3vw, 2.5rem);margin:.2rem 0 .55rem;line-height:1.12}
     .hero p{color:var(--muted);max-width:780px;margin:.25rem 0 0}
 
-    /* Grid: left column ~400px, right fills; centered with even gap */
-    .grid{
+    /* Studio layout: left rail + right canvas; perfectly centered */
+    .studio{
       display:grid;
       grid-template-columns: 1fr;
-      gap:22px;
-      margin:22px 0 36px;
+      gap: var(--gap);
+      margin: 22px 0 36px;
       align-items:start;
     }
-    @media (min-width: 980px){
-      .grid{
-        grid-template-columns: minmax(360px, 420px) minmax(0, 1fr);
-        gap:24px;
+    @media (min-width: 1024px){
+      .studio{
+        grid-template-columns: minmax(340px, var(--rail)) minmax(0, 1fr);
       }
     }
 
-    .panel, .card{
-      background: linear-gradient(180deg, rgba(14,20,54,.82), rgba(11,16,40,.86));
-      border:1px solid var(--border); border-radius:var(--radius); box-shadow: var(--shadow);
-      padding:18px;
+    .rail, .canvas{
+      background: linear-gradient(180deg, rgba(16,22,54,.84), rgba(12,17,40,.88));
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
     }
-    .panel h3, .card h3{margin:0 0 10px}
+    .rail h3, .canvas h3{margin:0 0 10px}
 
     label{display:block;font-weight:600;margin:6px 0 6px}
     input, select, textarea{
-      width:100%; background: #0b1028; color:var(--text);
+      width:100%; background: #0b1028; color:var(--ink);
       border:1px solid var(--border); border-radius:12px; padding:.75rem .95rem;
       outline:none; transition:border-color .2s ease, box-shadow .2s ease; font-size:1rem;
     }
@@ -120,18 +124,27 @@
     .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     .right{margin-left:auto}
 
-    /* Output block: limit measure, soft scroll, centered within card */
+    /* Tabs */
+    .tabs{display:flex; gap:8px; margin:6px 0 12px}
+    .tab{
+      padding:.45rem .7rem; border:1px solid var(--border); border-radius:999px;
+      background:#0c1226; color:var(--muted); cursor:pointer; font-weight:600;
+      transition: border-color .2s ease, background .2s ease, color .2s ease;
+    }
+    .tab[aria-selected="true"]{
+      color:#06131a; border-color:transparent;
+      background:linear-gradient(135deg, var(--brand-1), var(--brand-2));
+    }
+
+    /* Output area (consistent measure; soft scroll) */
     .out-wrap{
       border:1px solid var(--border);
-      border-radius:12px;
-      background:#0b1028;
-      padding:14px;
-      max-height:55vh;
-      overflow:auto;
+      border-radius:14px; background:#0b1028;
+      padding:16px; max-height:60vh; overflow:auto;
     }
     pre{
       margin:0; white-space:pre-wrap; word-wrap:break-word;
-      font-size:.95rem; line-height:1.55; max-width:70ch; /* readable width */
+      font-size:.96rem; line-height:1.6; max-width:72ch;
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
     }
 
@@ -142,7 +155,7 @@
   </style>
 </head>
 <body>
-  <!-- Header -->
+  <!-- Header (unchanged nav) -->
   <header>
     <div class="container nav">
       <a class="brand" href="/" aria-label="MentalHealthContent.ai home">
@@ -172,14 +185,14 @@
         <span class="small">No PHI • HIPAA-conscious workflows • Reading-level & tone controls</span>
       </div>
       <h1>Generate client-friendly content</h1>
-      <p class="small">Start with a topic and format. You’ll get a clean, copy-ready draft (educational use only).</p>
+      <p class="small">Start with a topic and format. Choose Text or export a DOCX. Educational use only.</p>
     </div>
   </section>
 
-  <!-- Main -->
-  <main class="container grid">
-    <!-- Left: form -->
-    <section class="panel">
+  <!-- Studio layout -->
+  <main class="container studio">
+    <!-- Rail: inputs -->
+    <section class="rail">
       <h3 style="margin-top:0">Your request</h3>
       <form id="genForm">
         <label for="topic">Topic</label>
@@ -200,23 +213,48 @@
 
         <div style="height:12px"></div>
         <div class="actions">
-          <button class="btn primary" type="submit" id="go">Generate</button>
-          <button class="btn ghost" type="button" id="sample">Use sample</button>
-          <button class="btn ghost" type="button" id="copy" disabled>Copy output</button>
+          <button class="btn primary" type="submit" id="btnGenerate">Generate</button>
+          <button class="btn ghost" type="button" id="btnSample">Use sample</button>
           <span class="small right mono" id="status"></span>
         </div>
 
         <div style="height:8px"></div>
-        <p class="small mono">Trial mode — calls <code>POST /api/generate</code>.</p>
+        <p class="small mono">Calls <code>POST /api/generate</code> with <code>{topic, format}</code>.</p>
       </form>
+
+      <hr style="border:none;border-top:1px solid var(--border); margin:16px 0">
+      <p class="small" style="margin:0">Tip: Keep topics concrete (e.g., “CARL technique for active listening – teen group”).</p>
     </section>
 
-    <!-- Right: output -->
-    <section class="card" aria-live="polite">
-      <h3 style="margin-top:0">Output</h3>
-      <div class="out-wrap">
-        <pre id="out">Run a generation to see output…</pre>
+    <!-- Canvas: results -->
+    <section class="canvas" aria-live="polite">
+      <div class="tabs" role="tablist" aria-label="Output type">
+        <button class="tab" role="tab" id="tab-text" aria-selected="true" aria-controls="panel-text">Text</button>
+        <button class="tab" role="tab" id="tab-docx" aria-selected="false" aria-controls="panel-docx">Document</button>
       </div>
+
+      <!-- TEXT PANEL -->
+      <section id="panel-text" role="tabpanel" aria-labelledby="tab-text">
+        <h3 style="margin-top:0">Output</h3>
+        <div class="out-wrap">
+          <pre id="out">Run a generation to see output…</pre>
+        </div>
+        <div class="actions" style="margin-top:10px">
+          <button class="btn ghost" type="button" id="btnCopy" disabled>Copy output</button>
+        </div>
+      </section>
+
+      <!-- DOCX PANEL -->
+      <section id="panel-docx" role="tabpanel" aria-labelledby="tab-docx" hidden>
+        <h3 style="margin-top:0">Document</h3>
+        <p class="small">Generate content, then export as a Word document (.docx) with one click.</p>
+        <div class="actions" style="margin-top:6px">
+          <button class="btn primary" type="button" id="btnGenerateDoc">Generate & Download DOCX</button>
+        </div>
+        <div class="out-wrap" style="margin-top:12px">
+          <pre id="docPreview">Document preview will appear here…</pre>
+        </div>
+      </section>
     </section>
   </main>
 
@@ -225,17 +263,44 @@
   </div>
 
   <script>
+    // Elements
     const form = document.getElementById('genForm');
     const topic = document.getElementById('topic');
-    const format = document.getElementById('format');
-    const out = document.getElementById('out');
+    const formatSel = document.getElementById('format');
     const statusEl = document.getElementById('status');
-    const copyBtn = document.getElementById('copy');
-    const sampleBtn = document.getElementById('sample');
+    const out = document.getElementById('out');
+    const copyBtn = document.getElementById('btnCopy');
+    const sampleBtn = document.getElementById('btnSample');
+    const genBtn = document.getElementById('btnGenerate');
+
+    const tabText = document.getElementById('tab-text');
+    const tabDocx = document.getElementById('tab-docx');
+    const panelText = document.getElementById('panel-text');
+    const panelDocx = document.getElementById('panel-docx');
+    const genDocBtn = document.getElementById('btnGenerateDoc');
+    const docPreview = document.getElementById('docPreview');
+
+    // Tabs
+    function selectTab(which){
+      const isText = which === 'text';
+      tabText.setAttribute('aria-selected', isText ? 'true' : 'false');
+      tabDocx.setAttribute('aria-selected', isText ? 'false' : 'true');
+      panelText.hidden = !isText;
+      panelDocx.hidden = isText;
+    }
+    tabText.addEventListener('click', () => selectTab('text'));
+    tabDocx.addEventListener('click', () => selectTab('docx'));
+
+    // Helpers
+    function setStatus(msg){ statusEl.textContent = msg || ''; }
+    function setOut(text){
+      out.textContent = text || '';
+      copyBtn.disabled = !out.textContent.trim();
+    }
 
     sampleBtn.addEventListener('click', () => {
       topic.value = "5-4-3-2-1 grounding for teens";
-      format.value = "carousel";
+      formatSel.value = "carousel";
       topic.focus();
     });
 
@@ -250,39 +315,84 @@
       }
     });
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const payload = { topic: topic.value?.trim(), format: format.value };
-      if(!payload.topic){
-        topic.focus();
-        return;
-      }
-
-      statusEl.textContent = "Generating…";
-      out.textContent = "";
-      copyBtn.disabled = true;
-
+    async function runGeneration(payload){
+      setStatus("Generating…");
+      setOut("");
       try{
         const res = await fetch('/api/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-
-        if (!res.ok){
+        if(!res.ok){
           const txt = await res.text();
-          out.textContent = `Error ${res.status}: ${txt || 'Request failed'}`;
-          return;
+          setOut(`Error ${res.status}: ${txt || 'Request failed'}`);
+          return null;
+        }
+        const data = await res.json();
+        const text = data.output || data.error || data.debug || '';
+        setOut(text || 'No output');
+        return text || '';
+      }catch(err){
+        setOut('Fetch error: ' + err.message);
+        return null;
+      }finally{
+        setStatus("");
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = { topic: topic.value?.trim(), format: formatSel.value };
+      if(!payload.topic){ topic.focus(); return; }
+      await runGeneration(payload);
+    });
+
+    // DOCX generation
+    genDocBtn.addEventListener('click', async () => {
+      const payload = { topic: topic.value?.trim(), format: formatSel.value };
+      if(!payload.topic){ topic.focus(); return; }
+
+      // Run generation (reuse API)
+      const text = await runGeneration(payload);
+      if(!text) return;
+
+      // Show preview
+      docPreview.textContent = text;
+
+      // Build .docx
+      try{
+        const { Document, Packer, Paragraph, HeadingLevel, TextRun } = window.docx;
+
+        // Convert lines to paragraphs; simple heading heuristic
+        const lines = text.split(/\r?\n/);
+        const children = [];
+        for(const line of lines){
+          if(!line.trim()){ children.push(new Paragraph("")); continue; }
+          const isH3 = line.trim().startsWith("### ");
+          const content = isH3 ? line.replace(/^###\s+/, "") : line;
+          children.push(
+            isH3
+              ? new Paragraph({ text: content, heading: HeadingLevel.HEADING_3 })
+              : new Paragraph({ children: [ new TextRun({ text: content }) ] })
+          );
         }
 
-        const data = await res.json();
-        out.textContent = data.output || data.error || data.debug || 'No output';
+        const doc = new Document({
+          sections: [{ properties: {}, children }]
+        });
+
+        const blob = await Packer.toBlob(doc);
+        const fname = `MHC_${(payload.topic || 'document').replace(/[^a-z0-9]+/gi,'_')}.docx`;
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = fname;
+        document.body.appendChild(a);
+        a.click();
+        URL.revokeObjectURL(a.href);
+        a.remove();
       }catch(err){
-        out.textContent = 'Fetch error: ' + err.message;
-      }finally{
-        statusEl.textContent = "";
-        copyBtn.disabled = !out.textContent?.trim();
+        alert("DOCX build failed: " + err.message);
       }
     });
   </script>
