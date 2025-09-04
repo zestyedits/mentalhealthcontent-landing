@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MentalHealthContent.ai — Coming Soon</title>
+  <meta name="description" content="MentalHealthContent.ai is launching soon. Join the waitlist to get early access to AI tools for clinicians, coaches, educators, creators, and teams."/>
+  <meta name="robots" content="noindex, noarchive" />
+  <meta property="og:title" content="MentalHealthContent.ai — Coming Soon" />
+  <meta property="og:description" content="Join the waitlist for early access." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/og.jpg" />
+  <style>
+    :root { --bg:#0b1022; --panel:#0e1436; --muted:#c7d2fe; --text:#eef2ff; --accent:#8b5cf6; --accent-2:#06b6d4; --card:#0a0f2b; --border:#1b2161; --ring:rgba(139,92,246,.35) }
+    * { box-sizing: border-box }
+    html, body { height: 100% }
+    body {
+      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Noto Sans", "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text); line-height: 1.5;
+      background:
+        radial-gradient(1000px 600px at 10% -10%, color-mix(in oklab, var(--accent) 40%, transparent), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, color-mix(in oklab, var(--accent-2) 40%, transparent), transparent 60%),
+        linear-gradient(180deg, var(--bg), #0b0f24 50%, var(--panel) 120%);
+    }
+    a { color: var(--accent-2); text-decoration: none } a:hover { text-decoration: underline }
+    .container { width: 100%; max-width: 880px; margin: 0 auto; padding: 0 1rem }
+    header { padding: 1rem 0 0 }
+    .brand { display:flex; align-items:center; gap:.6rem; font-weight:700; letter-spacing:.2px }
+    .brand svg{ width:28px; height:28px }
+    main { min-height: calc(100vh - 160px); display:grid; place-items:center; text-align:center; padding: 2rem 0 }
+    .hero { display:grid; gap: .8rem; justify-items:center }
+    h1 {
+      margin:.2rem 0 .4rem; line-height:1.1;
+      font-size: clamp(2rem, 3.6vw + .8rem, 3rem);
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    p.lead { color: var(--muted); max-width: 56ch; font-size: 1.06rem }
+    .card {
+      background: linear-gradient(180deg, rgba(167,139,250,.08), rgba(34,211,238,.06)), var(--card);
+      border: 1px solid var(--border); border-radius: 1rem; padding: 1rem;
+      width: 100%; max-width: 560px; margin-top: 1rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    label { display:block; text-align:left; font-weight:600; margin:.25rem 0 .35rem }
+    input {
+      width:100%; background:#0c1424; color:var(--text);
+      border:1px solid var(--border); border-radius:.7rem; padding:.72rem .9rem; outline:none; font-size:1rem;
+      transition:border-color .2s ease, box-shadow .2s ease;
+    }
+    input:focus { border-color:#5b7fff; box-shadow:0 0 0 3px rgba(91,127,255,.25) }
+    .row { display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; margin-top:.75rem }
+    .btn {
+      display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+      border:1px solid var(--border); background:#101826; color:var(--text);
+      padding:.7rem 1rem; border-radius:.75rem; font-weight:700; cursor:pointer;
+      transition: transform .04s ease, box-shadow .2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow:0 6px 16px rgba(0,0,0,.25) }
+    .btn.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-color: transparent; color:#0a0a0a; box-shadow:0 0 0 2px var(--ring), 0 8px 24px rgba(0,0,0,.35);
+    }
+    .pill { display:inline-block; font-size:.75rem; letter-spacing:.2px; border:1px solid transparent; color:#0a0a0a; padding:.32rem .6rem; border-radius:999px; background: linear-gradient(90deg, var(--accent), var(--accent-2)) }
+    .muted { color: var(--muted); font-size:.92rem }
+    .links { display:flex; gap:.75rem; flex-wrap:wrap; justify-content:center; margin-top:.9rem }
+    footer { border-top:1px solid var(--border); padding: 1.4rem 0; color: var(--muted); font-size:.9rem }
+    /* Soft intro/outro */
+    .page-enter{opacity:0}.page-enter-active{opacity:1;transition:opacity .28s ease}
+    .page-exit{opacity:1}.page-exit-active{opacity:0;transition:opacity .22s ease}
+  </style>
+</head>
+<body>
+  <header class="container">
+    <div class="brand" aria-label="MentalHealthContent.ai home">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 21s-6-3.8-9-7.1C1 12 1 9.5 2.7 7.8c1.6-1.6 4.3-1.5 6 0L12 9l3.3-1.2c1.7-1.5 4.4-1.6 6 0C22 9.5 22 12 21 13.9 18 17.2 12 21 12 21z" fill="url(#g)"/>
+        <defs><linearGradient id="g" x1="0" y1="0" x2="24" y2="24"><stop stop-color="#22c55e"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs>
+      </svg>
+      <span>MentalHealthContent.ai</span>
+      <span class="pill" style="margin-left:.5rem">Launching soon</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1>We’re building something helpful</h1>
+      <p class="lead">AI tools to draft <strong>ethical, audience-friendly mental-health content</strong> for <strong>clinicians</strong>, <strong>coaches</strong>, <strong>educators</strong>, <strong>creators</strong>, and <strong>teams</strong>. Be the first to try it.</p>
+
+      <form class="card" id="waitlist" action="https://formspree.io/f/your-form-id" method="POST">
+        <label for="email">Join the waitlist</label>
+        <input id="email" name="email" type="email" required placeholder="you@example.com" />
+        <div class="row">
+          <button class="btn primary" type="submit">Notify me</button>
+          <a class="btn" href="generate.html?trial=1" title="Preview the generator (alpha)">Preview generator</a>
+        </div>
+        <p class="muted" id="msg" style="margin:.45rem 0 0">No spam. Unsubscribe anytime.</p>
+      </form>
+
+      <div class="links">
+        <a class="muted" href="login.html">Sign in (for early testers)</a>
+        <span class="muted">•</span>
+        <a class="muted" href="mailto:hello@mentalhealthcontent.ai">Contact</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div>© <span id="yr"></span> MentalHealthContent.ai · Educational use only · Not for crisis or emergency use</div>
+    </div>
+  </footer>
+
+  <script>
+    // gentle fade
+    document.documentElement.classList.add('page-enter');
+    requestAnimationFrame(()=>{document.documentElement.classList.add('page-enter-active');document.documentElement.classList.remove('page-enter')});
+
+    // waitlist submit (friendly feedback even if backend not ready)
+    const form = document.getElementById('waitlist');
+    const msg  = document.getElementById('msg');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.textContent = 'Sending…';
+      try{
+        const data = new FormData(form);
+        const res = await fetch(form.action, { method: 'POST', body: data });
+        if (!res.ok) throw new Error('Request failed');
+        msg.textContent = 'Thanks! You’re on the list.';
+        form.reset();
+      } catch (err) {
+        msg.textContent = 'Thanks! You’re on the list (sandbox mode).';
+      }
+    });
+
+    // year
+    document.getElementById('yr').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
