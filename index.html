@@ -6,137 +6,60 @@
   <title>MentalHealthContent.ai — Create credible mental-health content with AI</title>
   <meta name="description" content="Generate ethical, audience-friendly mental-health content with AI. Built for clinicians, coaches, educators, creators, and teams. Try free prompts, then upgrade for brand voice, batch generation, and exports."/>
   <style>
-    :root {
-      --bg: #0b1022;
-      --panel: #0e1436;
-      --muted: #c7d2fe;
-      --text: #eef2ff;
-      --accent: #8b5cf6; /* violet */
-      --accent-2: #06b6d4; /* cyan */
-      --card: #0a0f2b;
-      --border: #1b2161;
-      --ring: rgba(139,92,246,.35);
-    }
-    [data-theme="vibrant"] {
-      --bg: #0a0a1f;
-      --panel: #0e1329;
-      --muted: #ffe4e6;
-      --text: #fff1f2;
-      --accent: #f97316; /* orange */
-      --accent-2: #ec4899; /* pink */
-      --card: #0c1028;
-      --border: #30215e;
-      --ring: rgba(236,72,153,.35);
-    }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body {
-      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      color: var(--text); line-height: 1.5;
-      background: radial-gradient(1000px 600px at 10% -10%, color-mix(in oklab, var(--accent) 40%, transparent), transparent 60%),
-                  radial-gradient(900px 500px at 90% 10%, color-mix(in oklab, var(--accent-2) 40%, transparent), transparent 60%),
-                  linear-gradient(180deg, var(--bg), #0b0f24 50%, var(--panel) 120%);
-    }
-    a { color: var(--accent-2); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 1rem; }
-
-    header {
-      position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(140%) blur(8px);
-      background: rgba(11, 18, 32, 0.7); border-bottom: 1px solid var(--border);
-    }
-    .nav { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 0; }
-    .brand { display: flex; align-items: center; gap: .6rem; font-weight: 700; letter-spacing: .2px; }
-    .brand svg { width: 28px; height: 28px; }
-    .menu { display: flex; gap: 1rem; align-items: center; }
-    .menu a { color: var(--text); opacity: 0.9; font-size: .95rem; }
-
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
-      border: 1px solid var(--border); background: #101826; color: var(--text);
-      padding: .65rem .95rem; border-radius: .75rem; font-weight: 600; cursor: pointer;
-      transition: transform .04s ease, box-shadow .2s ease;
-    }
-    .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,.25); }
-    .btn.primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      border-color: transparent; color: #0a0a0a;
-      box-shadow: 0 0 0 2px var(--ring), 0 8px 24px rgba(0,0,0,.35);
-    }
-    .btn.primary:hover { transform: translateY(-2px) scale(1.01); }
-    .btn.ghost { background: transparent; }
-
-    .hero { padding: 4rem 0 2.5rem; text-align: center; }
-    .hero h1 {
-      font-size: clamp(2.1rem, 2.8vw + 1rem, 3.25rem); line-height: 1.1; margin: .25rem 0 1rem;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      -webkit-background-clip: text; background-clip: text; color: transparent;
-    }
-    .hero p { color: var(--muted); max-width: 780px; margin: 0.25rem auto 1.25rem; font-size: 1.05rem; }
-    .hero .cta { display: flex; gap: .75rem; flex-wrap: wrap; justify-content: center; margin-top: 1.25rem; }
-    .hero .badges { display: flex; justify-content: center; gap: .75rem; color: var(--muted); font-size: .9rem; margin-top: .75rem; flex-wrap: wrap; }
-    .pill { display: inline-block; font-size: .75rem; letter-spacing: .2px; border: 1px solid transparent; color: #0a0a0a; padding: .32rem .6rem; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
-
-    .section { padding: 2.5rem 0; }
-    .section h2 { font-size: clamp(1.25rem, 2vw + .8rem, 1.75rem); margin: 0 0 1rem; }
-    .grid { display: grid; gap: 1rem; }
-    @media (min-width: 900px) {
-      .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
-      .grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
-    }
-    .card {
-      background: linear-gradient(180deg, rgba(167,139,250,.08), rgba(34,211,238,.06)), var(--card);
-      border: 1px solid var(--border); border-radius: 1rem; padding: 1rem;
-      transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
-    }
-    .card:hover { transform: translateY(-2px); border-color: color-mix(in hsl, var(--accent) 30%, var(--border)); box-shadow: 0 10px 30px rgba(0,0,0,.35); }
-    .card h3 { margin: .2rem 0 .25rem; font-size: 1.05rem; }
-    .card p { color: var(--muted); font-size: .95rem; margin: .25rem 0 .5rem; }
-    .micro { font-size: .9rem; color: var(--muted); }
-
-    /* Pricing */
-    .pricing { display: grid; gap: 1rem; }
-    @media (min-width: 900px) { .pricing { grid-template-columns: repeat(4, 1fr); } }
-    .price-card { background: linear-gradient(180deg, #0d1628, #0c1424); border: 1px solid var(--border); border-radius: 1rem; padding: 1rem; display: flex; flex-direction: column; gap: .6rem; }
-    .price-card h3 { margin: 0; }
-    .price { font-size: 1.6rem; font-weight: 800; }
-    .features { list-style: none; padding: 0; margin: .25rem 0 0; }
-    .features li { padding-left: 1.25rem; position: relative; margin: .35rem 0; color: var(--muted); }
-    .features li::before { content: "✔"; position: absolute; left: 0; top: 0; opacity: .6; }
-
-    /* Prompt Gallery */
-    .prompt { background: #0c1424; border: 1px dashed #334155; border-radius: .85rem; padding: .9rem; }
-    .prompt code { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: .9rem; color: #cbd5e1; }
-    .toolbar { display: flex; gap: .5rem; justify-content: flex-end; margin-top: .5rem; }
-
-    footer { border-top: 1px solid var(--border); padding: 2rem 0; color: var(--muted); font-size: .9rem; }
-
-    /* Page transitions */
-    html { scroll-behavior: smooth; }
-    .page-enter { opacity: 0; }
-    .page-enter-active { opacity: 1; transition: opacity .28s ease; }
-    .page-exit { opacity: 1; }
-    .page-exit-active { opacity: 0; transition: opacity .22s ease; }
+    :root { --bg:#0b1022; --panel:#0e1436; --muted:#c7d2fe; --text:#eef2ff; --accent:#8b5cf6; --accent-2:#06b6d4; --card:#0a0f2b; --border:#1b2161; --ring:rgba(139,92,246,.35);}
+    [data-theme="vibrant"] { --bg:#0a0a1f; --panel:#0e1329; --muted:#ffe4e6; --text:#fff1f2; --accent:#f97316; --accent-2:#ec4899; --card:#0c1028; --border:#30215e; --ring:rgba(236,72,153,.35);}
+    *{box-sizing:border-box} html,body{height:100%}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,"Helvetica Neue",Arial,"Apple Color Emoji","Segoe UI Emoji";color:var(--text);line-height:1.5;background:radial-gradient(1000px 600px at 10% -10%,color-mix(in oklab,var(--accent) 40%,transparent),transparent 60%),radial-gradient(900px 500px at 90% 10%,color-mix(in oklab,var(--accent-2) 40%,transparent),transparent 60%),linear-gradient(180deg,var(--bg),#0b0f24 50%,var(--panel) 120%)}
+    a{color:var(--accent-2);text-decoration:none} a:hover{text-decoration:underline}
+    .container{width:100%;max-width:1100px;margin:0 auto;padding:0 1rem}
+    header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(140%) blur(8px);background:rgba(11,18,32,.7);border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0}
+    .brand{display:flex;align-items:center;gap:.6rem;font-weight:700;letter-spacing:.2px}
+    .brand svg{width:28px;height:28px}
+    .menu{display:flex;gap:1rem;align-items:center}
+    .menu a{color:var(--text);opacity:.9;font-size:.95rem}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border:1px solid var(--border);background:#101826;color:var(--text);padding:.65rem .95rem;border-radius:.75rem;font-weight:600;cursor:pointer;transition:transform .04s ease,box-shadow .2s ease}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.25)}
+    .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));border-color:transparent;color:#0a0a0a;box-shadow:0 0 0 2px var(--ring),0 8px 24px rgba(0,0,0,.35)}
+    .btn.primary:hover{transform:translateY(-2px) scale(1.01)}
+    .btn.ghost{background:transparent}
+    .hero{padding:4rem 0 2.5rem;text-align:center}
+    .hero h1{font-size:clamp(2.1rem,2.8vw + 1rem,3.25rem);line-height:1.1;margin:.25rem 0 1rem;background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .hero p{color:var(--muted);max-width:780px;margin:.25rem auto 1.25rem;font-size:1.05rem}
+    .hero .cta{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-top:1.25rem}
+    .hero .badges{display:flex;justify-content:center;gap:.75rem;color:var(--muted);font-size:.9rem;margin-top:.75rem;flex-wrap:wrap}
+    .pill{display:inline-block;font-size:.75rem;letter-spacing:.2px;border:1px solid transparent;color:#0a0a0a;padding:.32rem .6rem;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+    .section{padding:2.5rem 0} .section h2{font-size:clamp(1.25rem,2vw + .8rem,1.75rem);margin:0 0 1rem}
+    .grid{display:grid;gap:1rem} @media(min-width:900px){.grid.cols-3{grid-template-columns:repeat(3,1fr)}.grid.cols-2{grid-template-columns:repeat(2,1fr)}}
+    .card{background:linear-gradient(180deg,rgba(167,139,250,.08),rgba(34,211,238,.06)),var(--card);border:1px solid var(--border);border-radius:1rem;padding:1rem;transition:transform .15s ease,box-shadow .2s ease,border-color .2s ease}
+    .card:hover{transform:translateY(-2px);border-color:color-mix(in hsl,var(--accent) 30%,var(--border));box-shadow:0 10px 30px rgba(0,0,0,.35)}
+    .card h3{margin:.2rem 0 .25rem;font-size:1.05rem} .card p{color:var(--muted);font-size:.95rem;margin:.25rem 0 .5rem}
+    .micro{font-size:.9rem;color:var(--muted)}
+    .pricing{display:grid;gap:1rem}@media(min-width:900px){.pricing{grid-template-columns:repeat(4,1fr)}}
+    .price-card{background:linear-gradient(180deg,#0d1628,#0c1424);border:1px solid var(--border);border-radius:1rem;padding:1rem;display:flex;flex-direction:column;gap:.6rem}
+    .price-card h3{margin:0}.price{font-size:1.6rem;font-weight:800}
+    .features{list-style:none;padding:0;margin:.25rem 0 0}.features li{padding-left:1.25rem;position:relative;margin:.35rem 0;color:var(--muted)}.features li::before{content:"✔";position:absolute;left:0;top:0;opacity:.6}
+    .prompt{background:#0c1424;border:1px dashed #334155;border-radius:.85rem;padding:.9rem}
+    .prompt code{white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:.9rem;color:#cbd5e1}
+    .toolbar{display:flex;gap:.5rem;justify-content:flex-end;margin-top:.5rem}
+    footer{border-top:1px solid var(--border);padding:2rem 0;color:var(--muted);font-size:.9rem}
+    html{scroll-behavior:smooth}.page-enter{opacity:0}.page-enter-active{opacity:1;transition:opacity .28s ease}.page-exit{opacity:1}.page-exit-active{opacity:0;transition:opacity .22s ease}
   </style>
 </head>
 <body>
   <header>
     <div class="container nav">
-      <a data-xnav class="brand" href="/" aria-label="MentalHealthContent.ai home">
-        <!-- Simple brain-heart logo -->
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M12 21s-6-3.8-9-7.1C1 12 1 9.5 2.7 7.8c1.6-1.6 4.3-1.5 6 0L12 9l3.3-1.2c1.7-1.5 4.4-1.6 6 0C22 9.5 22 12 21 13.9 18 17.2 12 21 12 21z" fill="url(#g)"/>
-          <defs><linearGradient id="g" x1="0" y1="0" x2="24" y2="24"><stop stop-color="#22c55e"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs>
-        </svg>
+      <a data-xnav class="brand" href="index.html" aria-label="MentalHealthContent.ai home">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s-6-3.8-9-7.1C1 12 1 9.5 2.7 7.8c1.6-1.6 4.3-1.5 6 0L12 9l3.3-1.2c1.7-1.5 4.4-1.6 6 0C22 9.5 22 12 21 13.9 18 17.2 12 21 12 21z" fill="url(#g)"/></svg>
         <span>MentalHealthContent.ai</span>
       </a>
       <nav class="menu" aria-label="primary">
-        <a data-xnav href="/#examples">Examples</a>
-        <a data-xnav href="/#prompts">Free Prompts</a>
-        <a data-xnav href="/#pricing">Pricing</a>
-        <a data-xnav href="/#faq">FAQ</a>
-        <a data-xnav class="btn ghost" href="/login">Sign in</a>
-        <a data-xnav class="btn primary" href="/generate?trial=1">Try generator</a>
+        <a data-xnav href="index.html#examples">Examples</a>
+        <a data-xnav href="index.html#prompts">Free Prompts</a>
+        <a data-xnav href="index.html#pricing">Pricing</a>
+        <a data-xnav href="index.html#faq">FAQ</a>
+        <a data-xnav class="btn ghost" href="login.html">Sign in</a>
+        <a data-xnav class="btn primary" href="generate.html?trial=1">Try generator</a>
       </nav>
     </div>
   </header>
@@ -147,8 +70,8 @@
       <h1>Create credible mental-health content with AI</h1>
       <p>Built for <strong>clinicians</strong>, <strong>coaches</strong>, <strong>educators</strong>, <strong>creators</strong>, and <strong>teams</strong>. Generate posts, worksheet outlines, psychoeducation blurbs, video scripts, and more—fast. Start with <strong>free prompts</strong>; upgrade for brand voice, batch generation, and export-ready assets. <em>Not for clinical diagnosis or crisis use.</em></p>
       <div class="cta">
-        <a data-xnav class="btn primary" href="/generate?trial=1">Try 3 free prompts</a>
-        <a data-xnav class="btn" href="/login">Sign in</a>
+        <a data-xnav class="btn primary" href="generate.html?trial=1">Try 3 free prompts</a>
+        <a data-xnav class="btn" href="login.html">Sign in</a>
       </div>
       <div class="badges">
         <span class="pill">No PHI • HIPAA-conscious workflows</span>
@@ -160,21 +83,9 @@
     <section class="section container" id="examples">
       <h2>What you can make in minutes</h2>
       <div class="grid cols-3">
-        <div class="card">
-          <h3>Instagram carousel copy</h3>
-          <p class="micro">Topic: 5-4-3-2-1 grounding • Audience: teens • Tone: warm, validating</p>
-          <p>Hook, concise slides, alt-text suggestions, and a final crisis disclaimer.</p>
-        </div>
-        <div class="card">
-          <h3>Worksheet outline</h3>
-          <p class="micro">Modality: CBT • Skill: thought reframing • Level: 6th grade</p>
-          <p>Title, goal, step-by-step sections, example, reflection questions, and printable notes.</p>
-        </div>
-        <div class="card">
-          <h3>Short video script</h3>
-          <p class="micro">Format: 60s TikTok • Topic: DBT STOP skill</p>
-          <p>Hook, timestamped beats, on-screen captions, B-roll ideas, and a clear disclaimer slide.</p>
-        </div>
+        <div class="card"><h3>Instagram carousel copy</h3><p class="micro">Topic: 5-4-3-2-1 grounding • Audience: teens • Tone: warm, validating</p><p>Hook, concise slides, alt-text suggestions, and a final crisis disclaimer.</p></div>
+        <div class="card"><h3>Worksheet outline</h3><p class="micro">Modality: CBT • Skill: thought reframing • Level: 6th grade</p><p>Title, goal, step-by-step sections, example, reflection questions, and printable notes.</p></div>
+        <div class="card"><h3>Short video script</h3><p class="micro">Format: 60s TikTok • Topic: DBT STOP skill</p><p>Hook, timestamped beats, on-screen captions, B-roll ideas, and a clear disclaimer slide.</p></div>
       </div>
     </section>
 
@@ -186,7 +97,7 @@
           <code id="p1">Write a 7-slide Instagram carousel about the 5-4-3-2-1 grounding technique for teens with anxiety. Tone: warm and validating. Reading level: 6th grade. Include alt-text suggestions for each slide and a short crisis disclaimer on the final slide.</code>
           <div class="toolbar">
             <button class="btn" onclick="copy('#p1')">Copy</button>
-            <a data-xnav class="btn primary" href="/generate?trial=1">Open in generator</a>
+            <a data-xnav class="btn primary" href="generate.html?trial=1">Open in generator</a>
           </div>
         </div>
         <div class="prompt">
@@ -194,7 +105,7 @@
           <code id="p2">Create a printable worksheet outline teaching CBT thought reframing. Sections: (1) What is a thought? (2) Spotting thinking traps, (3) Reframe steps with example, (4) Try it, (5) Reflection. Reading level: 5th–6th grade. Include notes for a black-and-white printable layout.</code>
           <div class="toolbar">
             <button class="btn" onclick="copy('#p2')">Copy</button>
-            <a data-xnav class="btn primary" href="/generate?trial=1">Open in generator</a>
+            <a data-xnav class="btn primary" href="generate.html?trial=1">Open in generator</a>
           </div>
         </div>
         <div class="prompt">
@@ -202,7 +113,7 @@
           <code id="p3">Draft a 60-second video script explaining the DBT STOP skill. Include timestamps (0–60s), on-screen captions, simple analogies, and a final slide with a non-crisis disclaimer.</code>
           <div class="toolbar">
             <button class="btn" onclick="copy('#p3')">Copy</button>
-            <a data-xnav class="btn primary" href="/generate?trial=1">Open in generator</a>
+            <a data-xnav class="btn primary" href="generate.html?trial=1">Open in generator</a>
           </div>
         </div>
         <div class="prompt">
@@ -210,7 +121,7 @@
           <code id="p4">Generate an outline for a 1200-word blog post on “What is ACT therapy?” for a general audience. Include meta title/description suggestions, FAQ schema ideas, and a sidebar callout clarifying this is educational content, not medical advice.</code>
           <div class="toolbar">
             <button class="btn" onclick="copy('#p4')">Copy</button>
-            <a data-xnav class="btn primary" href="/generate?trial=1">Open in generator</a>
+            <a data-xnav class="btn primary" href="generate.html?trial=1">Open in generator</a>
           </div>
         </div>
       </div>
@@ -221,44 +132,24 @@
       <h2>Simple pricing</h2>
       <div class="pricing">
         <div class="price-card">
-          <h3>Free</h3>
-          <div class="price">$0</div>
-          <ul class="features">
-            <li>3 generations / day</li>
-            <li>Starter prompt library</li>
-            <li>Watermarked exports</li>
-          </ul>
-          <a data-xnav class="btn" href="/generate?trial=1">Start free</a>
+          <h3>Free</h3><div class="price">$0</div>
+          <ul class="features"><li>3 generations / day</li><li>Starter prompt library</li><li>Watermarked exports</li></ul>
+          <a data-xnav class="btn" href="generate.html?trial=1">Start free</a>
         </div>
         <div class="price-card" style="border-color:#1e3a8a; box-shadow: 0 0 0 1px #1e3a8a inset;">
-          <h3>Creator</h3>
-          <div class="price">$12 / mo</div>
-          <ul class="features">
-            <li>200 credits / mo</li>
-            <li>Brand voice & reading level</li>
-            <li>Export: printable & captions</li>
-          </ul>
-          <a data-xnav class="btn primary" href="/login">Upgrade</a>
+          <h3>Creator</h3><div class="price">$12 / mo</div>
+          <ul class="features"><li>200 credits / mo</li><li>Brand voice & reading level</li><li>Export: printable & captions</li></ul>
+          <a data-xnav class="btn primary" href="login.html">Upgrade</a>
         </div>
         <div class="price-card">
-          <h3>Pro</h3>
-          <div class="price">$29 / mo</div>
-          <ul class="features">
-            <li>800 credits / mo</li>
-            <li>Batch & versions</li>
-            <li>Citation helper & disclaimers</li>
-          </ul>
-          <a data-xnav class="btn" href="/login">Go Pro</a>
+          <h3>Pro</h3><div class="price">$29 / mo</div>
+          <ul class="features"><li>800 credits / mo</li><li>Batch & versions</li><li>Citation helper & disclaimers</li></ul>
+          <a data-xnav class="btn" href="login.html">Go Pro</a>
         </div>
         <div class="price-card">
-          <h3>Agency</h3>
-          <div class="price">$69 / mo</div>
-          <ul class="features">
-            <li>5 seats + shared library</li>
-            <li>Custom templates & styles</li>
-            <li>Priority support</li>
-          </ul>
-          <a data-xnav class="btn" href="/login">Contact</a>
+          <h3>Agency</h3><div class="price">$69 / mo</div>
+          <ul class="features"><li>5 seats + shared library</li><li>Custom templates & styles</li><li>Priority support</li></ul>
+          <a data-xnav class="btn" href="login.html">Contact</a>
         </div>
       </div>
       <p class="micro" style="margin-top:.5rem">Or buy credits as you go • One-time packs available at checkout.</p>
@@ -266,69 +157,34 @@
 
     <section class="section container" id="faq">
       <h2>FAQ</h2>
-      <details>
-        <summary>Is this medical advice?</summary>
-        <p>No. This is an educational content tool. It does not provide diagnosis or treatment and is not a substitute for professional care. Always include a crisis disclaimer and local resources when appropriate.</p>
-      </details>
-      <details>
-        <summary>Is client data stored?</summary>
-        <p>Avoid entering protected health information (PHI). We do not require PHI for content generation. Drafts you create can be deleted at any time from your account.</p>
-      </details>
-      <details>
-        <summary>How do credits work?</summary>
-        <p>Each generation costs 1–5 credits depending on length and features (e.g., batch runs). Unused subscription credits roll over for 30 days.</p>
-      </details>
-      <details>
-        <summary>What about citations and accuracy?</summary>
-        <p>Pro plans include a citation helper that suggests reputable sources and flags language that could be misleading, stigmatizing, or outside scope.</p>
-      </details>
+      <details><summary>Is this medical advice?</summary><p>No. This is an educational content tool. It does not provide diagnosis or treatment and is not a substitute for professional care. Always include a crisis disclaimer and local resources when appropriate.</p></details>
+      <details><summary>Is client data stored?</summary><p>Avoid entering protected health information (PHI). We do not require PHI for content generation. Drafts you create can be deleted at any time from your account.</p></details>
+      <details><summary>How do credits work?</summary><p>Each generation costs 1–5 credits depending on length and features (e.g., batch runs). Unused subscription credits roll over for 30 days.</p></details>
+      <details><summary>What about citations and accuracy?</summary><p>Pro plans include a citation helper that suggests reputable sources and flags language that could be misleading, stigmatizing, or outside scope.</p></details>
     </section>
   </main>
 
   <footer>
     <div class="container">
       <div>MentalHealthContent.ai • © <span id="yr"></span></div>
-      <div style="margin-top:.5rem">Educational use only. Not for crisis or emergency use. <a data-xnav href="/terms">Terms</a> · <a data-xnav href="/privacy">Privacy</a> · <a data-xnav href="/contact">Contact</a></div>
+      <div style="margin-top:.5rem">Educational use only. Not for crisis or emergency use. <a data-xnav href="terms.html">Terms</a> · <a data-xnav href="privacy.html">Privacy</a> · <a data-xnav href="contact.html">Contact</a></div>
     </div>
   </footer>
 
   <script>
-    // Page transitions
     document.documentElement.classList.add('page-enter');
-    requestAnimationFrame(()=> {
-      document.documentElement.classList.add('page-enter-active');
-      document.documentElement.classList.remove('page-enter');
-    });
+    requestAnimationFrame(()=>{document.documentElement.classList.add('page-enter-active');document.documentElement.classList.remove('page-enter')});
     document.addEventListener('click', (e) => {
-      const a = e.target.closest('a[data-xnav]');
-      if (!a) return;
-      const url = new URL(a.href, location.origin);
-      if (url.origin !== location.origin || (a.target && a.target !== '_self')) return;
+      const a = e.target.closest('a[data-xnav]'); if (!a) return;
+      const sameTab = !a.target || a.target === '_self';
+      if (!sameTab) return; // allow new-tab links
       e.preventDefault();
       document.documentElement.classList.add('page-exit');
-      requestAnimationFrame(() => {
-        document.documentElement.classList.add('page-exit-active');
-        setTimeout(() => { location.href = a.href; }, 180);
-      });
+      requestAnimationFrame(()=>{document.documentElement.classList.add('page-exit-active');setTimeout(()=>{location.href=a.getAttribute('href')},180)});
     });
-
-    // Footer year
     document.getElementById('yr').textContent = new Date().getFullYear();
-
-    // Copy helper
-    function copy(sel){
-      const el = document.querySelector(sel);
-      const r = document.createRange();
-      r.selectNode(el);
-      const s = window.getSelection();
-      s.removeAllRanges(); s.addRange(r);
-      try { document.execCommand('copy'); } catch(e) {}
-      s.removeAllRanges();
-      const btn = el.parentElement.querySelector('button');
-      const old = btn.textContent; btn.textContent = 'Copied!';
-      setTimeout(()=> btn.textContent = old, 900);
-    }
-    window.copy = copy;
+    function copy(sel){const el=document.querySelector(sel);const r=document.createRange();r.selectNode(el);const s=window.getSelection();s.removeAllRanges();s.addRange(r);try{document.execCommand('copy')}catch(e){}s.removeAllRanges();const btn=el.parentElement.querySelector('button');const old=btn.textContent;btn.textContent='Copied!';setTimeout(()=>btn.textContent=old,900)}
+    window.copy=copy;
   </script>
 </body>
 </html>
