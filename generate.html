@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Generate — MentalHealthContent.ai</title>
-  <meta name="description" content="Generate client-friendly mental-health content with AI. Export text or DOCX.">
+  <meta name="description" content="Generate audience-friendly mental-health content with AI. Export text or DOCX." />
 
   <style>
     :root {
@@ -12,96 +12,169 @@
       --panel: #0e1436;
       --muted: #c7d2fe;
       --text: #eef2ff;
-      --accent: #8b5cf6;
-      --accent-2: #06b6d4;
+      --accent: #8b5cf6; /* violet */
+      --accent-2: #06b6d4; /* cyan */
       --card: #0a0f2b;
       --border: #1b2161;
       --ring: rgba(139,92,246,.35);
     }
     * { box-sizing: border-box; }
-    html, body { height: 100%; margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial; color: var(--text); }
+    html, body { height: 100%; }
     body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      line-height: 1.5;
       background: radial-gradient(1000px 600px at 10% -10%, color-mix(in oklab, var(--accent) 40%, transparent), transparent 60%),
                   radial-gradient(900px 500px at 90% 10%, color-mix(in oklab, var(--accent-2) 40%, transparent), transparent 60%),
                   linear-gradient(180deg, var(--bg), #0b0f24 50%, var(--panel) 120%);
     }
-    .container { max-width:1100px; margin:0 auto; padding:0 1rem; }
-    header { position:sticky; top:0; z-index:50; backdrop-filter:blur(8px); background:rgba(11,18,32,.7); border-bottom:1px solid var(--border);}
-    .nav { display:flex; justify-content:space-between; align-items:center; padding:.9rem 0; }
-    .brand { display:flex; gap:.6rem; align-items:center; font-weight:700; }
-    .menu { display:flex; gap:1rem; }
-    .menu a { color:var(--text); opacity:.9; font-size:.95rem; }
-    .btn { display:inline-flex; align-items:center; justify-content:center; padding:.65rem .95rem; border-radius:.75rem; border:1px solid var(--border); background:#101826; color:var(--text); font-weight:600; cursor:pointer; }
-    .btn.primary { background:linear-gradient(135deg,var(--accent),var(--accent-2)); border:0; color:#0a0a0a; }
-    .hero { padding:2.5rem 0 1.25rem; }
-    .hero h1 { font-size:2.2rem; background:linear-gradient(90deg,var(--accent),var(--accent-2)); -webkit-background-clip:text; background-clip:text; color:transparent; margin:.5rem 0; }
-    .meta { color:var(--muted); font-size:.95rem; }
-    .pill { background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#0a0a0a; border-radius:999px; padding:.25rem .6rem; font-size:.75rem; margin-left:.5rem; }
-    .studio { display:grid; gap:1rem; margin:1rem 0 2rem; }
-    @media(min-width:980px){.studio{grid-template-columns:390px 1fr;}}
-    .card { background:var(--card); border:1px solid var(--border); border-radius:1rem; padding:1rem; }
-    label{font-weight:600; display:block; margin:.5rem 0;}
-    input,select{width:100%; padding:.7rem .85rem; background:#0c1424; border:1px solid var(--border); border-radius:.7rem; color:var(--text);}
-    .actions{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;}
-    .out{background:#0c1424; border:1px solid var(--border); border-radius:.7rem; padding:.9rem; max-height:60vh; overflow:auto;}
-    pre{white-space:pre-wrap; word-break:break-word; font-family:monospace; font-size:.95rem; margin:0;}
-    footer{border-top:1px solid var(--border); padding:2rem 0; color:var(--muted); font-size:.9rem;}
+    a { color: var(--accent-2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Header (same as index) */
+    .container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 1rem; }
+    header {
+      position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(140%) blur(8px);
+      background: rgba(11, 18, 32, 0.7); border-bottom: 1px solid var(--border);
+    }
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 0; }
+    .brand { display: flex; align-items: center; gap: .6rem; font-weight: 700; letter-spacing: .2px; }
+    .brand svg { width: 28px; height: 28px; }
+    .menu { display: flex; gap: 1rem; align-items: center; }
+    .menu a { color: var(--text); opacity: 0.9; font-size: .95rem; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+      border: 1px solid var(--border); background: #101826; color: var(--text);
+      padding: .65rem .95rem; border-radius: .75rem; font-weight: 600; cursor: pointer;
+      transition: transform .04s ease, box-shadow .2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,.25); }
+    .btn.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-color: transparent; color: #0a0a0a;
+      box-shadow: 0 0 0 2px var(--ring), 0 8px 24px rgba(0,0,0,.35);
+    }
+    .btn.primary:hover { transform: translateY(-2px) scale(1.01); }
+    .btn.ghost { background: transparent; }
+
+    /* Hero */
+    .hero { padding: 2.75rem 0 1.25rem; }
+    .hero h1 {
+      font-size: clamp(1.9rem, 2.4vw + 1rem, 2.8rem);
+      line-height: 1.12; margin: .25rem 0 .5rem;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .meta { color: var(--muted); font-size: .95rem; }
+    .pill {
+      display: inline-block; font-size: .75rem; letter-spacing: .2px; border: 1px solid transparent; color: #0a0a0a;
+      padding: .32rem .6rem; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+
+    /* Cards + layout */
+    .card {
+      background: linear-gradient(180deg, rgba(167,139,250,.08), rgba(34,211,238,.06)), var(--card);
+      border: 1px solid var(--border); border-radius: 1rem; padding: 1rem;
+      transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .card:hover { transform: translateY(-2px); border-color: color-mix(in hsl, var(--accent) 30%, var(--border)); box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+
+    .studio { display: grid; gap: 1rem; margin: 1rem 0 2rem; align-items: start; }
+    @media (min-width: 980px) { .studio { grid-template-columns: 390px minmax(0,1fr); } }
+
+    .rail h3, .canvas h3 { margin: .2rem 0 .6rem; font-size: 1.05rem; }
+    label { display:block; font-weight:600; margin:.4rem 0 .35rem; }
+    input, select {
+      width:100%; background:#0c1424; color:var(--text);
+      border:1px solid var(--border); border-radius:.7rem; padding:.7rem .85rem; outline:none;
+      transition: border-color .2s ease, box-shadow .2s ease; font-size:1rem;
+    }
+    input:focus, select:focus { border-color: #5b7fff; box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 25%, transparent); }
+    .actions { display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; }
+    .right { margin-left:auto; color: var(--muted); font-size:.9rem; }
+
+    .out { border:1px solid var(--border); background:#0c1424; border-radius:.7rem; padding:.9rem; max-height:60vh; overflow:auto; }
+    pre { margin:0; white-space:pre-wrap; word-wrap:break-word; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size:.95rem; line-height:1.6; max-width: 72ch; }
+
+    footer { border-top: 1px solid var(--border); padding: 2rem 0; color: var(--muted); font-size: .9rem; margin-top:.5rem; }
+
+    /* Page transitions */
+    html { scroll-behavior: smooth; }
+    .page-enter { opacity: 0; }
+    .page-enter-active { opacity: 1; transition: opacity .28s ease; }
+    .page-exit { opacity: 1; }
+    .page-exit-active { opacity: 0; transition: opacity .22s ease; }
   </style>
 
+  <!-- DOCX generator (client-side) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.3.2/docx.umd.min.js" defer></script>
 </head>
 <body>
   <header>
     <div class="container nav">
-      <div class="brand">
-        <svg viewBox="0 0 24 24" width="28" height="28"><path d="M12 21s-6-3.8-9-7.1C1 12 1 9.5 2.7 7.8c1.6-1.6 4.3-1.5 6 0L12 9l3.3-1.2c1.7-1.5 4.4-1.6 6 0C22 9.5 22 12 21 13.9 18 17.2 12 21 12 21z" fill="url(#g)"/></svg>
+      <a data-xnav class="brand" href="/" aria-label="MentalHealthContent.ai home">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 21s-6-3.8-9-7.1C1 12 1 9.5 2.7 7.8c1.6-1.6 4.3-1.5 6 0L12 9l3.3-1.2c1.7-1.5 4.4-1.6 6 0C22 9.5 22 12 21 13.9 18 17.2 12 21 12 21z" fill="url(#g)"/>
+          <defs><linearGradient id="g" x1="0" y1="0" x2="24" y2="24"><stop stop-color="#22c55e"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs>
+        </svg>
         <span>MentalHealthContent.ai</span>
-      </div>
-      <nav class="menu">
-        <a href="/#examples">Examples</a>
-        <a href="/#prompts">Free Prompts</a>
-        <a href="/#pricing">Pricing</a>
-        <a href="/#faq">FAQ</a>
-        <a class="btn ghost" href="https://app.mentalhealthcontent.ai">Sign in</a>
-        <a class="btn primary" href="/#start">Start free</a>
+      </a>
+      <nav class="menu" aria-label="primary">
+        <a data-xnav href="/#examples">Examples</a>
+        <a data-xnav href="/#prompts">Free Prompts</a>
+        <a data-xnav href="/#pricing">Pricing</a>
+        <a data-xnav href="/#faq">FAQ</a>
+        <a data-xnav class="btn ghost" href="/login">Sign in</a>
+        <a data-xnav class="btn primary" href="/generate?trial=1">Try generator</a>
       </nav>
     </div>
   </header>
 
   <main class="container">
     <section class="hero">
-      <h1>Generate client-friendly content</h1>
-      <p class="meta">Start with a topic and format. Export as text or DOCX. <em>Educational use only.</em>
-        <span id="creditPill" class="pill">Free credits left: 2</span>
+      <h1>Generate audience-friendly content</h1>
+      <p class="meta">
+        Great for clinicians, coaches, educators, creators, and teams. Start with a topic and format; get a clean draft you can tune for your audience. Export text or DOCX.
+        <em> Educational use only.</em>
+        <span id="creditPill" class="pill" style="margin-left:.5rem">Free credits left: 2</span>
       </p>
     </section>
 
     <section class="studio">
+      <!-- Left: inputs -->
       <div class="card rail">
         <h3>Your request</h3>
         <form id="genForm">
           <label for="topic">Topic</label>
-          <input id="topic" value="DBT Skills for Teens">
-          <label for="format">Format</label>
-          <select id="format">
+          <input id="topic" name="topic" placeholder="5-4-3-2-1 grounding for teens" value="DBT Skills for Teens" />
+
+          <label for="format" style="margin-top:.7rem;">Format</label>
+          <select id="format" name="format">
             <option value="carousel">Instagram carousel</option>
             <option value="worksheet" selected>Worksheet outline</option>
             <option value="video">60s video script</option>
             <option value="blog">Blog outline</option>
           </select>
+
           <div class="actions" style="margin-top:.8rem">
             <button class="btn primary" type="submit" id="btnGenerate">Generate</button>
             <button class="btn" type="button" id="btnSample">Use sample</button>
-            <span id="status" style="margin-left:auto;color:var(--muted);font-size:.9rem;"></span>
+            <span class="right" id="status"></span>
           </div>
         </form>
-        <hr style="margin:1rem 0; border:none; border-top:1px solid var(--border)">
-        <div class="actions">
+
+        <hr style="border:none;border-top:1px solid var(--border); margin:1rem 0">
+        <div class="actions" style="gap:.5rem">
           <button class="btn" id="btnDocx" title="Sign in to export DOCX" disabled>Generate & Download DOCX</button>
           <button class="btn" id="btnCopy" disabled>Copy output</button>
         </div>
+        <p class="micro" style="margin-top:.6rem">No account needed for your first 2 generations. Sign in to save and export.</p>
       </div>
-      <div class="card canvas">
+
+      <!-- Right: output -->
+      <div class="card canvas" aria-live="polite">
         <h3>Output</h3>
         <div class="out"><pre id="out">Run a generation to see output…</pre></div>
       </div>
@@ -109,37 +182,136 @@
   </main>
 
   <footer>
-    <div class="container">MentalHealthContent.ai • © <span id="yr"></span></div>
+    <div class="container">
+      <div>MentalHealthContent.ai • © <span id="yr"></span></div>
+    </div>
   </footer>
 
   <script>
+    // Page transitions
+    document.documentElement.classList.add('page-enter');
+    requestAnimationFrame(()=> {
+      document.documentElement.classList.add('page-enter-active');
+      document.documentElement.classList.remove('page-enter');
+    });
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('a[data-xnav]');
+      if (!a) return;
+      const url = new URL(a.href, location.origin);
+      if (url.origin !== location.origin || (a.target && a.target !== '_self')) return;
+      e.preventDefault();
+      document.documentElement.classList.add('page-exit');
+      requestAnimationFrame(() => {
+        document.documentElement.classList.add('page-exit-active');
+        setTimeout(() => { location.href = a.href; }, 180);
+      });
+    });
+
+    // Footer year
     document.getElementById('yr').textContent = new Date().getFullYear();
 
+    // Trial credits (client-side placeholder until backend)
     const TRIAL_KEY = 'mhc_trial_uses_v1';
     const MAX_FREE = 2;
-    function getTrialUses(){ return +localStorage.getItem(TRIAL_KEY)||0; }
-    function incTrialUses(){ localStorage.setItem(TRIAL_KEY,getTrialUses()+1); }
-    function remainingFree(){ return Math.max(0,MAX_FREE-getTrialUses()); }
-    function updateCreditPill(){document.getElementById('creditPill').textContent=`Free credits left: ${remainingFree()}`;}
+    const creditPill = document.getElementById('creditPill');
+
+    function getTrialUses(){ return Number(localStorage.getItem(TRIAL_KEY) || 0); }
+    function incTrialUses(){ localStorage.setItem(TRIAL_KEY, String(getTrialUses() + 1)); }
+    function remainingFree(){ return Math.max(0, MAX_FREE - getTrialUses()); }
+    function updateCreditPill(){ if (creditPill) creditPill.textContent = `Free credits left: ${remainingFree()}`; }
+
     updateCreditPill();
+    (function focusIfTrial(){
+      const url = new URL(location.href);
+      if (url.searchParams.get('trial') === '1') document.getElementById('topic').focus();
+    })();
 
-    const form=document.getElementById('genForm'),topic=document.getElementById('topic'),formatSel=document.getElementById('format');
-    const out=document.getElementById('out'),copyBtn=document.getElementById('btnCopy'),statusEl=document.getElementById('status');
-    const genBtn=document.getElementById('btnGenerate'),docxBtn=document.getElementById('btnDocx');
+    // Elements
+    const form = document.getElementById('genForm');
+    const topic = document.getElementById('topic');
+    const formatSel = document.getElementById('format');
+    const statusEl = document.getElementById('status');
+    const out = document.getElementById('out');
+    const copyBtn = document.getElementById('btnCopy');
+    const sampleBtn = document.getElementById('btnSample');
+    const genBtn = document.getElementById('btnGenerate');
+    const docxBtn = document.getElementById('btnDocx');
 
-    function setOut(txt){out.textContent=txt;copyBtn.disabled=!txt.trim();}
-    async function runGeneration(payload){
-      if(remainingFree()===0){genBtn.disabled=true;genBtn.textContent='Create account to continue';return;}
-      statusEl.textContent="Generating…"; setOut("");
-      try{
-        const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-        const data=await res.json(); const text=data.output||'No output'; setOut(text);
-        incTrialUses(); updateCreditPill(); if(remainingFree()===0){genBtn.disabled=true;genBtn.textContent='Create account to continue';}
-      }catch(e){setOut('Error: '+e.message);}finally{statusEl.textContent="";}
+    function setStatus(msg){ statusEl.textContent = msg || ''; }
+    function setOut(text){
+      out.textContent = text || '';
+      copyBtn.disabled = !out.textContent.trim();
     }
-    form.addEventListener('submit',e=>{e.preventDefault();runGeneration({topic:topic.value.trim(),format:formatSel.value});});
-    document.getElementById('btnSample').onclick=()=>{topic.value="5-4-3-2-1 grounding for teens";formatSel.value="carousel";};
-    copyBtn.onclick=()=>navigator.clipboard.writeText(out.textContent||"");
+    function enforceTrialGate(){
+      if (remainingFree() === 0){
+        genBtn.disabled = true;
+        genBtn.textContent = 'Create a free account to keep going';
+        genBtn.onclick = () => location.href = '/login';
+      }
+    }
+    enforceTrialGate();
+
+    sampleBtn.addEventListener('click', () => {
+      topic.value = "5-4-3-2-1 grounding for teens";
+      formatSel.value = "carousel";
+      topic.focus();
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      try{
+        await navigator.clipboard.writeText(out.textContent || "");
+        const old = copyBtn.textContent; copyBtn.textContent = "Copied!";
+        setTimeout(()=> copyBtn.textContent = old, 900);
+      }catch(e){}
+    });
+
+    async function runGeneration(payload){
+      if (remainingFree() === 0){ enforceTrialGate(); return null; }
+      setStatus("Generating…"); setOut("");
+      try{
+        const res = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if(!res.ok){
+          const txt = await res.text();
+          setOut(`Error ${res.status}: ${txt || 'Request failed'}`);
+          return null;
+        }
+        const data = await res.json();
+        const text = data.output || data.error || data.debug || '';
+        setOut(text || 'No output');
+
+        if (text){
+          incTrialUses();
+          updateCreditPill();
+          enforceTrialGate();
+        }
+        return text || '';
+      }catch(err){
+        setOut('Fetch error: ' + err.message);
+        return null;
+      }finally{
+        setStatus("");
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = { topic: topic.value?.trim(), format: formatSel.value };
+      if(!payload.topic){ topic.focus(); return; }
+      await runGeneration(payload);
+    });
+
+    // DOCX export (kept gated for sign-in for now)
+    docxBtn.addEventListener('click', () => {
+      alert('Sign in to export DOCX.');
+      location.href = '/login';
+    });
+
+    // If you decide to allow DOCX during trial, replace the above with a generator using the docx lib:
+    // 1) wait for window.docx, 2) build Document from out.textContent, 3) Packer.toBlob, 4) download.
   </script>
 </body>
 </html>
