@@ -40,8 +40,19 @@
     pre{margin:0;white-space:pre-wrap;word-wrap:break-word;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;font-size:.95rem;line-height:1.6;max-width:72ch}
     footer{border-top:1px solid var(--border);padding:2rem 0;color:var(--muted);font-size:.9rem;margin-top:.5rem}
     html{scroll-behavior:smooth}.page-enter{opacity:0}.page-enter-active{opacity:1;transition:opacity .28s ease}.page-exit{opacity:1}.page-exit-active{opacity:0;transition:opacity .22s ease}
+    .chip{display:inline-flex;align-items:center;gap:.5rem;background:#0c1424;border:1px solid var(--border);border-radius:999px;padding:.25rem .6rem;color:var(--muted);font-size:.85rem}
   </style>
+
+  <!-- DOCX -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.3.2/docx.umd.min.js" defer></script>
+
+  <!-- Supabase client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // 🔑 Paste your real values:
+    window.SUPABASE_URL = "YOUR_SUPABASE_URL";
+    window.SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+  </script>
 </head>
 <body>
   <header>
@@ -55,8 +66,8 @@
         <a data-xnav href="index.html#prompts">Free Prompts</a>
         <a data-xnav href="index.html#pricing">Pricing</a>
         <a data-xnav href="index.html#faq">FAQ</a>
-        <a data-xnav class="btn ghost" href="login.html">Sign in</a>
-        <a data-xnav class="btn primary" href="generate.html?trial=1">Try generator</a>
+        <a id="signinLink" class="btn ghost" href="login.html">Sign in</a>
+        <button id="signoutBtn" class="btn ghost" style="display:none" type="button">Sign out</button>
       </nav>
     </div>
   </header>
@@ -68,6 +79,7 @@
         Great for clinicians, coaches, educators, creators, and teams. Start with a topic and format; get a clean draft you can tune for your audience. Export text or DOCX.
         <em> Educational use only.</em>
         <span id="creditPill" class="pill" style="margin-left:.5rem">Free credits left: 2</span>
+        <span id="accountChip" class="chip" style="margin-left:.5rem;display:none"></span>
       </p>
     </section>
 
@@ -117,36 +129,157 @@
     document.addEventListener('click',(e)=>{const a=e.target.closest('a[data-xnav]');if(!a)return;const sameTab=!a.target||a.target==='_self';if(!sameTab)return;e.preventDefault();document.documentElement.classList.add('page-exit');requestAnimationFrame(()=>{document.documentElement.classList.add('page-exit-active');setTimeout(()=>{location.href=a.getAttribute('href')},180)})});
     document.getElementById('yr').textContent=new Date().getFullYear();
 
-    // trial credits
+    // ---------- Supabase setup ----------
+    const supa = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+
+    // trial credits (for signed-out users only)
     const TRIAL_KEY='mhc_trial_uses_v1',MAX_FREE=2,creditPill=document.getElementById('creditPill');
-    function getTrialUses(){return Number(localStorage.getItem(TRIAL_KEY)||0)} function incTrialUses(){localStorage.setItem(TRIAL_KEY,String(getTrialUses()+1))} function remainingFree(){return Math.max(0,MAX_FREE-getTrialUses())} function updateCreditPill(){if(creditPill) creditPill.textContent=`Free credits left: ${remainingFree()}`}
-    updateCreditPill(); (function(){const url=new URL(location.href);if(url.searchParams.get('trial')==='1') document.getElementById('topic').focus()})();
+    function getTrialUses(){return Number(localStorage.getItem(TRIAL_KEY)||0)}
+    function incTrialUses(){localStorage.setItem(TRIAL_KEY,String(getTrialUses()+1))}
+    function remainingFree(){return Math.max(0,MAX_FREE-getTrialUses())}
+    function updateFreePill(){ if(creditPill) creditPill.textContent=`Free credits left: ${remainingFree()}` }
 
     // elements
-    const form=document.getElementById('genForm'),topic=document.getElementById('topic'),formatSel=document.getElementById('format'),statusEl=document.getElementById('status'),out=document.getElementById('out'),copyBtn=document.getElementById('btnCopy'),sampleBtn=document.getElementById('btnSample'),genBtn=document.getElementById('btnGenerate'),docxBtn=document.getElementById('btnDocx');
-    function setStatus(m){statusEl.textContent=m||''} function setOut(t){out.textContent=t||'';copyBtn.disabled=!out.textContent.trim()}
-    function enforceTrialGate(){if(remainingFree()===0){genBtn.disabled=true;genBtn.textContent='Create a free account to keep going';genBtn.onclick=()=>location.href='login.html'}}
-    enforceTrialGate();
+    const form=document.getElementById('genForm'),topic=document.getElementById('topic'),formatSel=document.getElementById('format'),
+          statusEl=document.getElementById('status'),out=document.getElementById('out'),
+          copyBtn=document.getElementById('btnCopy'),sampleBtn=document.getElementById('btnSample'),
+          genBtn=document.getElementById('btnGenerate'),docxBtn=document.getElementById('btnDocx'),
+          signinLink=document.getElementById('signinLink'), signoutBtn=document.getElementById('signoutBtn'),
+          accountChip=document.getElementById('accountChip');
 
+    function setStatus(m){statusEl.textContent=m||''}
+    function setOut(t){out.textContent=t||'';copyBtn.disabled=!out.textContent.trim()}
+
+    function enforceTrialGate(){
+      if(remainingFree()===0){
+        genBtn.disabled=true;
+        genBtn.textContent='Create a free account to keep going';
+        genBtn.onclick=()=>location.href='login.html';
+      }
+    }
+
+    // Sample + copy
     sampleBtn.addEventListener('click',()=>{topic.value="5-4-3-2-1 grounding for teens";formatSel.value="carousel";topic.focus()});
     copyBtn.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(out.textContent||"");const old=copyBtn.textContent;copyBtn.textContent="Copied!";setTimeout(()=>copyBtn.textContent=old,900)}catch(e){}});
 
+    // Generation fetch
     async function runGeneration(payload){
-      if(remainingFree()===0){enforceTrialGate();return null}
       setStatus("Generating…"); setOut("");
       try{
         const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
         if(!res.ok){const txt=await res.text();setOut(`Error ${res.status}: ${txt||'Request failed'}`);return null}
         const data=await res.json(); const text=data.output||data.error||data.debug||''; setOut(text||'No output');
-        if(text){incTrialUses();updateCreditPill();enforceTrialGate()}
         return text||'';
       }catch(err){setOut('Fetch error: '+err.message);return null} finally{setStatus("")}
     }
 
-    form.addEventListener('submit',async(e)=>{e.preventDefault();const payload={topic:topic.value?.trim(),format:formatSel.value};if(!payload.topic){topic.focus();return}await runGeneration(payload)});
+    // ---------- Auth + profile ----------
+    async function refreshAuthUI(){
+      const { data: { session } } = await supa.auth.getSession();
+      if(!session){
+        // Signed out UI
+        updateFreePill();
+        enforceTrialGate();
+        signinLink.style.display = '';
+        signoutBtn.style.display = 'none';
+        accountChip.style.display = 'none';
+        docxBtn.disabled = true;
+        return { session:null, profile:null };
+      }
 
-    // DOCX remains gated to login
-    docxBtn.addEventListener('click',()=>{alert('Sign in to export DOCX.');location.href='login.html'});
+      // Signed in: read profile (RLS)
+      const { data: profile } = await supa
+        .from('profiles')
+        .select('email, tier, credits')
+        .eq('user_id', session.user.id)
+        .single();
+
+      // Header actions
+      signinLink.style.display = 'none';
+      signoutBtn.style.display = '';
+      signoutBtn.onclick = async () => { await supa.auth.signOut(); location.reload(); };
+
+      // Pill + DOCX
+      if(profile){
+        creditPill.textContent = `Tier: ${profile.tier} • Credits: ${profile.credits}`;
+        accountChip.textContent = session.user.email || 'Account';
+        accountChip.style.display = '';
+        docxBtn.disabled = false;
+        docxBtn.title = "Download DOCX";
+      }
+
+      return { session, profile };
+    }
+
+    // Initial UI
+    let auth = { session:null, profile:null };
+    (async () => {
+      auth = await refreshAuthUI();
+      if(new URL(location.href).searchParams.get('trial')==='1') document.getElementById('topic').focus();
+    })();
+
+    // Use a credit if signed in; otherwise enforce guest trial
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload={ topic: topic.value?.trim(), format: formatSel.value };
+      if(!payload.topic){ topic.focus(); return; }
+
+      auth = await refreshAuthUI();
+
+      if(auth.session){
+        // Spend a credit before generating
+        const token = (await supa.auth.getSession()).data.session?.access_token;
+        let spendRes;
+        try{
+          spendRes = await fetch('/api/credits-use', {
+            method:'POST',
+            headers:{ 'Content-Type':'application/json', 'Authorization': `Bearer ${token}` }
+          });
+        }catch(err){
+          alert('Network error using a credit. Please retry.');
+          return;
+        }
+
+        if(spendRes.status === 402){
+          alert('You’re out of credits. Choose a plan to continue.');
+          location.href = '/#pricing';
+          return;
+        }
+        if(!spendRes.ok){
+          const err = await spendRes.json().catch(()=>({error:'Failed'}));
+          alert('Problem using a credit: ' + (err.error || spendRes.status));
+          return;
+        }
+        // Update pill from server response
+        const j = await spendRes.json();
+        if(j?.profile){
+          creditPill.textContent = `Tier: ${j.profile.tier} • Credits: ${j.profile.credits}`;
+        }
+      } else {
+        // Guest mode: 2 free local tries
+        if(remainingFree()===0){ enforceTrialGate(); return; }
+      }
+
+      const text = await runGeneration(payload);
+      if(text && !auth.session){ incTrialUses(); updateFreePill(); enforceTrialGate(); }
+    });
+
+    // DOCX export (enabled only when signed in)
+    docxBtn.addEventListener('click', async () => {
+      const { Document, Packer, Paragraph } = window.docx || {};
+      if(!Document){ alert('DOCX library not loaded.'); return; }
+      const content = (document.getElementById('out').textContent || '').trim();
+      if(!content){ alert('No output to export.'); return; }
+      const doc = new Document({
+        sections: [{ children: content.split('\n').map(line => new Paragraph(line)) }]
+      });
+      const blob = await Packer.toBlob(doc);
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'mentalhealthcontent-output.docx';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
   </script>
 </body>
 </html>
