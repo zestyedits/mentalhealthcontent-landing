@@ -31,7 +31,6 @@
     a { color: var(--accent-2); text-decoration: none; }
     a:hover { text-decoration: underline; }
 
-    /* Header (same as other pages) */
     .container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 1rem; }
     header {
       position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(140%) blur(8px);
@@ -55,7 +54,6 @@
     .btn.primary:hover { transform: translateY(-2px) scale(1.01); }
     .btn.ghost { background: transparent; }
 
-    /* Page */
     main { min-height: calc(100vh - 140px); display: grid; place-items: center; }
     .card {
       background: linear-gradient(180deg, rgba(167,139,250,.08), rgba(34,211,238,.06)), var(--card);
@@ -91,6 +89,15 @@
     .page-exit { opacity: 1; }
     .page-exit-active { opacity: 0; transition: opacity .22s ease; }
   </style>
+
+  <!-- Supabase client (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Configure your project keys -->
+  <script>
+    // TODO: paste your actual values:
+    window.SUPABASE_URL = "https://svrkmtdbnijzoqnyckag.supabase.co";
+    window.SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2cmttdGRibmlqem9xbnlja2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMzEyNDIsImV4cCI6MjA3MzgwNzI0Mn0.Bi_x4lZNi2CXQsEZYItVx8xAK5ISgyqLXdp3vToEd4w";
+  </script>
 </head>
 <body>
   <header>
@@ -120,7 +127,7 @@
       <!-- Magic link -->
       <form id="magicForm" class="auth">
         <label for="email">Email</label>
-        <input id="email" name="email" type="email" required placeholder="you@example.com" />
+        <input id="email" name="email" type="email" required placeholder="you@example.com" autocomplete="email" />
         <div class="row" style="margin-top:.8rem">
           <button class="btn primary" type="submit" id="btnMagic">Send magic link</button>
           <a class="btn" href="/generate?trial=1" data-xnav>Continue as guest</a>
@@ -130,10 +137,9 @@
 
       <div class="divider">or</div>
 
-      <!-- Social (wire these when ready) -->
+      <!-- Google OAuth -->
       <div class="row">
-        <a class="btn" href="/api/auth/google" title="Continue with Google">Continue with Google</a>
-        <!-- Add others as needed: GitHub, Apple, etc. -->
+        <button class="btn" id="btnGoogle" type="button" title="Continue with Google">Continue with Google</button>
       </div>
 
       <p class="muted" style="margin-top:.9rem">
@@ -172,26 +178,45 @@
     // footer year
     document.getElementById('yr').textContent = new Date().getFullYear();
 
-    // magic link (wire backend later)
-    const form = document.getElementById('magicForm');
+    // ---------- Supabase Auth wiring ----------
+    const supabase = window.supabase.createClient(
+      window.SUPABASE_URL,
+      window.SUPABASE_ANON_KEY
+    );
+
     const msg = document.getElementById('msg');
-    form.addEventListener('submit', async (e) => {
+
+    // Magic link flow
+    document.getElementById('magicForm')?.addEventListener('submit', async (e) => {
       e.preventDefault();
-      msg.textContent = "Sending link…";
       const email = document.getElementById('email').value.trim();
-      try{
-        const res = await fetch('/api/auth/magic-link', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ email })
-        });
-        if (!res.ok) throw new Error(await res.text() || "Request failed");
+      if (!email) { msg.textContent = "Enter your email."; return; }
+      msg.textContent = "Sending link…";
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: `${location.origin}/generate.html` }
+      });
+      if (error) {
+        msg.textContent = "Error: " + error.message;
+      } else {
         msg.textContent = "Check your email for the sign-in link.";
-      }catch(err){
-        // Graceful fallback: pretend success so UX isn’t blocked while backend is WIP
-        msg.textContent = "If this were live, you’d have a sign-in link in your inbox. (Auth not wired yet.)";
       }
     });
+
+    // Google OAuth flow
+    document.getElementById('btnGoogle')?.addEventListener('click', async () => {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: `${location.origin}/generate.html` }
+      });
+      if (error) msg.textContent = "Error: " + error.message;
+    });
+
+    // Optional: if already signed in, send to generator
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) location.href = '/generate.html';
+    })();
   </script>
 </body>
 </html>
