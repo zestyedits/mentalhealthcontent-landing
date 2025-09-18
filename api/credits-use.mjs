@@ -8,36 +8,59 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 1) Validate the user from the bearer token
+    // --- 1) Validate the user from the bearer token (sent from the browser) ---
     const authHeader = req.headers.authorization || '';
     const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
     if (!token) return res.status(401).json({ error: 'Missing bearer token' });
 
-    // Use anon client just to validate the token
+    // Use anon client to validate session
     const anon = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY, {
       global: { headers: { Authorization: `Bearer ${token}` } }
     });
     const { data: { user }, error: userErr } = await anon.auth.getUser();
     if (userErr || !user) return res.status(401).json({ error: 'Invalid session' });
 
-    // 2) Use service role to atomically check tier/credits and decrement
+    // --- 2) Use service role for privileged updates ---
     const admin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-    // Fetch current profile
-    const { data: profile, error: profErr } = await admin
-      .from('profiles').select('tier, credits').eq('user_id', user.id).single();
-    if (profErr || !profile) throw profErr || new Error('Profile not found');
+    // Ensure profile exists (backfill for legacy users)
+    let { data: profile, error: profErr } = await admin
+      .from('profiles')
+      .select('tier, credits')
+      .eq('user_id', user.id)
+      .maybeSingle(); // <- tolerate 0 rows without throwing
 
-    // Simple rule set: free users must have credits > 0; paid tiers can also consume credits (or skip)
+    if (profErr) throw profErr;
+
+    if (!profile) {
+      // Create a default profile
+      const { data: inserted, error: insertErr } = await admin
+        .from('profiles')
+        .insert({
+          user_id: user.id,
+          email: user.email,
+          tier: 'free',
+          credits: 10
+        })
+        .select('tier, credits')
+        .single();
+      if (insertErr) throw insertErr;
+      profile = inserted;
+    }
+
     const isPaid = profile.tier !== 'free';
+
+    // Free users must have credits
     if (!isPaid && profile.credits <= 0) {
       return res.status(402).json({ error: 'No credits', code: 'NO_CREDITS' });
     }
 
-    // Decrement if you want *all* tiers to consume; or wrap in `if (!isPaid) { ... }`
-    const { error: updErr, data: updated } = await admin
+    // Decrement credits for everyone right now (you can change this rule)
+    const newCredits = profile.credits - 1;
+
+    const { data: updated, error: updErr } = await admin
       .from('profiles')
-      .update({ credits: profile.credits - 1, updated_at: new Date().toISOString() })
+      .update({ credits: newCredits, updated_at: new Date().toISOString() })
       .eq('user_id', user.id)
       .select('tier, credits')
       .single();
