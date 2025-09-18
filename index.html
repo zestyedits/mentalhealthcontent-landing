@@ -43,12 +43,12 @@
       box-shadow: 0 10px 30px rgba(0,0,0,.35);
     }
     label { display:block; text-align:left; font-weight:600; margin:.25rem 0 .35rem }
-    input {
+    input, select {
       width:100%; background:#0c1424; color:var(--text);
       border:1px solid var(--border); border-radius:.7rem; padding:.72rem .9rem; outline:none; font-size:1rem;
       transition:border-color .2s ease, box-shadow .2s ease;
     }
-    input:focus { border-color:#5b7fff; box-shadow:0 0 0 3px rgba(91,127,255,.25) }
+    input:focus, select:focus { border-color:#5b7fff; box-shadow:0 0 0 3px rgba(91,127,255,.25) }
     .row { display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; margin-top:.75rem }
     .btn {
       display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
@@ -65,7 +65,6 @@
     .muted { color: var(--muted); font-size:.92rem }
     .links { display:flex; gap:.75rem; flex-wrap:wrap; justify-content:center; margin-top:.9rem }
     footer { border-top:1px solid var(--border); padding: 1.4rem 0; color: var(--muted); font-size:.9rem }
-    /* Soft intro/outro */
     .page-enter{opacity:0}.page-enter-active{opacity:1;transition:opacity .28s ease}
     .page-exit{opacity:1}.page-exit-active{opacity:0;transition:opacity .22s ease}
   </style>
@@ -87,14 +86,24 @@
       <h1>We’re building something helpful</h1>
       <p class="lead">AI tools to draft <strong>ethical, audience-friendly mental-health content</strong> for <strong>clinicians</strong>, <strong>coaches</strong>, <strong>educators</strong>, <strong>creators</strong>, and <strong>teams</strong>. Be the first to try it.</p>
 
-      <form class="card" id="waitlist" action="https://formspree.io/f/your-form-id" method="POST">
-        <label for="email">Join the waitlist</label>
-        <input id="email" name="email" type="email" required placeholder="you@example.com" />
+      <!-- WAITLIST -->
+      <form class="card" id="waitlist-form" aria-label="Join the waitlist">
+        <label for="waitlist-email">Join the waitlist</label>
+        <input id="waitlist-email" name="email" type="email" required placeholder="you@example.com" autocomplete="email" />
+        <label for="waitlist-role" style="margin-top:.6rem">I’m a… (optional)</label>
+        <select id="waitlist-role" name="role">
+          <option value="">Select a role</option>
+          <option>Therapist / Clinician</option>
+          <option>Coach / Educator</option>
+          <option>Content Creator</option>
+          <option>Agency / Org</option>
+          <option>Other</option>
+        </select>
         <div class="row">
           <button class="btn primary" type="submit">Notify me</button>
           <a class="btn" href="generate.html?trial=1" title="Preview the generator (alpha)">Preview generator</a>
         </div>
-        <p class="muted" id="msg" style="margin:.45rem 0 0">No spam. Unsubscribe anytime.</p>
+        <p class="muted" id="waitlist-msg" style="margin:.45rem 0 0">No spam. Unsubscribe anytime.</p>
       </form>
 
       <div class="links">
@@ -116,25 +125,37 @@
     document.documentElement.classList.add('page-enter');
     requestAnimationFrame(()=>{document.documentElement.classList.add('page-enter-active');document.documentElement.classList.remove('page-enter')});
 
-    // waitlist submit (friendly feedback even if backend not ready)
-    const form = document.getElementById('waitlist');
-    const msg  = document.getElementById('msg');
-    form.addEventListener('submit', async (e) => {
+    // year
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    // --- WAITLIST: post to your Vercel serverless API ---
+    const form = document.getElementById('waitlist-form');
+    const emailEl = document.getElementById('waitlist-email');
+    const roleEl = document.getElementById('waitlist-role');
+    const msg = document.getElementById('waitlist-msg');
+
+    form?.addEventListener('submit', async (e) => {
       e.preventDefault();
-      msg.textContent = 'Sending…';
-      try{
-        const data = new FormData(form);
-        const res = await fetch(form.action, { method: 'POST', body: data });
-        if (!res.ok) throw new Error('Request failed');
+      const email = emailEl.value.trim();
+      const role  = roleEl?.value || '';
+      if (!email) { msg.textContent = 'Please enter an email.'; return; }
+
+      msg.textContent = 'Saving…';
+      try {
+        const res = await fetch('/api/waitlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, role })
+        });
+        const j = await res.json();
+        if (!res.ok || !j.ok) throw new Error(j.error || 'Failed');
         msg.textContent = 'Thanks! You’re on the list.';
         form.reset();
       } catch (err) {
-        msg.textContent = 'Thanks! You’re on the list (sandbox mode).';
+        console.error(err);
+        msg.textContent = 'Sorry—something went wrong. Please try again.';
       }
     });
-
-    // year
-    document.getElementById('yr').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
